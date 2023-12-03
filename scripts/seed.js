@@ -182,7 +182,7 @@ async function seedDonationItems(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-        // Create the "donation_items" table if it doesn't exist
+        // Create the "donationItems" table if it doesn't exist
         const createTable = await client.sql`
           CREATE TABLE IF NOT EXISTS donationItems (
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -191,9 +191,9 @@ async function seedDonationItems(client) {
           );
         `;
 
-        console.log(`Created "donation_items" table`);
+        console.log(`Created "donationItems" table`);
 
-        // Insert data into the "donation_items" table
+        // Insert data into the "donationItems" table
         const insertedDonationItems = await Promise.all(
             donationItems.map(async (item) => {
                 return client.sql`
