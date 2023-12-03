@@ -1,18 +1,13 @@
 const { db } = require("@vercel/postgres");
-const {
-    // invoices,
-    // customers,
-    // revenue,
-    members, users,
-} = require('../app/lib/placeholder-data.js');
+const { members, teams, campaigns } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
 async function seedMembers(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-        
+
         // Create the "members" table if it doesn't exist
-      const createTable = await client.sql`
+        const createTable = await client.sql`
         DO $$ BEGIN
           IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'member_role') THEN
             DROP TYPE member_role;
@@ -52,6 +47,93 @@ async function seedMembers(client) {
         };
     } catch (error) {
         console.error("Error seeding members:", error);
+        throw error;
+    }
+}
+async function seedCampaigns(client) {
+    try {
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "campaigns" table if it doesn't exist
+        const createTable = await client.sql`
+          CREATE TABLE IF NOT EXISTS campaigns (
+            id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+            name VARCHAR(150) NOT NULL UNIQUE,
+            campaign_leader_id UUID NOT NULL,
+            FOREIGN KEY (campaign_leader_id) REFERENCES members(id)
+          );
+        `;
+
+        console.log(`Created "campaigns" table`);
+
+        // Insert data into the "teams" table
+        const insertedCampaigns = await Promise.all(
+            campaigns.map(async (campaign) => {
+                return client.sql`
+                    INSERT INTO campaigns (name, campaign_leader_id)
+                    VALUES (${campaign.name}, ${campaign.campaign_leader_id})
+                    ON CONFLICT (id) DO NOTHING;
+                `;
+            })
+        );
+
+        console.log(`Seeded ${insertedCampaigns.length} campaigns`);
+
+        return {
+            createTable,
+            campaigns: insertedCampaigns,
+        };
+    } catch (error) {
+        console.error("Error seeding campaigns:", error);
+        throw error;
+    }
+}
+
+async function seedTeams(client) {
+    try {
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "teams" table if it doesn't exist
+        const createTable = await client.sql`
+        DO $$ BEGIN
+          IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'team_status') THEN
+            DROP TYPE team_status;
+          END IF;
+        END $$;
+        CREATE TYPE team_status AS ENUM ('active', 'archived');
+          CREATE TABLE IF NOT EXISTS teams (
+            id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            district VARCHAR(150) NOT NULL,
+            status team_status NOT NULL,
+            team_leader_id UUID NOT NULL,
+            campaign_id UUID NOT NULL,
+            FOREIGN KEY (team_leader_id) REFERENCES members(id),
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
+          );
+        `;
+
+        console.log(`Created "teams" table`);
+
+        // Insert data into the "teams" table
+        const insertedTeams = await Promise.all(
+            teams.map(async (team) => {
+                return client.sql`
+                    INSERT INTO teams (name, district, status, team_leader_id, campaign_id)
+                    VALUES (${team.name}, ${team.district}, ${team.status}, ${team.team_leader_id}, ${team.campaign_id})
+                    ON CONFLICT (id) DO NOTHING;
+                `;
+            })
+        );
+
+        console.log(`Seeded ${insertedTeams.length} teams`);
+
+        return {
+            createTable,
+            teams: insertedTeams,
+        };
+    } catch (error) {
+        console.error("Error seeding teams:", error);
         throw error;
     }
 }
@@ -175,7 +257,9 @@ async function seedRevenue(client) {
 async function main() {
     const client = await db.connect();
 
-    await seedMembers(client);
+    // await seedMembers(client);
+    // await seedCampaigns(client);
+    await seedTeams(client);
     // await seedCustomers(client);
     // await seedInvoices(client);
     // await seedRevenue(client);
