@@ -1,5 +1,5 @@
 const { db } = require("@vercel/postgres");
-const { members, teams, campaigns } = require("../app/lib/placeholder-data.js");
+const { members, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
 async function seedMembers(client) {
@@ -32,8 +32,8 @@ async function seedMembers(client) {
             members.map(async (member) => {
                 const hashedPassword = await bcrypt.hash(member.password, 10);
                 return client.sql`
-        INSERT INTO members (name, phone, email, address, role, password)
-        VALUES (${member.name}, ${member.phone}, ${member.email}, ${member.address}, ${member.role}, ${hashedPassword})
+        INSERT INTO members (id, name, phone, email, address, role, password)
+        VALUES (${member.id}, ${member.name}, ${member.phone}, ${member.email}, ${member.address}, ${member.role}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
             })
@@ -70,8 +70,8 @@ async function seedCampaigns(client) {
         const insertedCampaigns = await Promise.all(
             campaigns.map(async (campaign) => {
                 return client.sql`
-                    INSERT INTO campaigns (name, campaign_leader_id)
-                    VALUES (${campaign.name}, ${campaign.campaign_leader_id})
+                    INSERT INTO campaigns (id, name, campaign_leader_id)
+                    VALUES (${campaign.id}, ${campaign.name}, ${campaign.campaign_leader_id})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
@@ -119,8 +119,8 @@ async function seedTeams(client) {
         const insertedTeams = await Promise.all(
             teams.map(async (team) => {
                 return client.sql`
-                    INSERT INTO teams (name, district, status, team_leader_id, campaign_id)
-                    VALUES (${team.name}, ${team.district}, ${team.status}, ${team.team_leader_id}, ${team.campaign_id})
+                    INSERT INTO teams (id, name, district, status, team_leader_id, campaign_id)
+                    VALUES (${team.id}, ${team.name}, ${team.district}, ${team.status}, ${team.team_leader_id}, ${team.campaign_id})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
@@ -137,132 +137,137 @@ async function seedTeams(client) {
         throw error;
     }
 }
-/* 
 
-async function seedInvoices(client) {
+async function seedVolunteersWorksOrWorkedIn(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-        // Create the "invoices" table if it doesn't exist
+        // Create the "volunteers_works_or_worked_in" table if it doesn't exist
         const createTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS invoices (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    customer_id UUID NOT NULL,
-    amount INT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL
-  );
-`;
+          CREATE TABLE IF NOT EXISTS volunteers_works_or_worked_in (
+            volunteer_id UUID NOT NULL,
+            team_id UUID NOT NULL,
+            FOREIGN KEY (volunteer_id) REFERENCES members(id),
+            FOREIGN KEY (team_id) REFERENCES teams(id),
+            PRIMARY KEY (volunteer_id, team_id)
+          );
+        `;
 
-        console.log(`Created "invoices" table`);
+        console.log(`Created "volunteers_works_or_worked_in" table`);
 
-        // Insert data into the "invoices" table
-        const insertedInvoices = await Promise.all(
-            invoices.map(
-                (invoice) => client.sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
-        ON CONFLICT (id) DO NOTHING;
-      `
-            )
+        // Insert data into the "volunteers_works_or_worked_in" table
+        const insertedVolunteersWorksOrWorkedIn = await Promise.all(
+            volunteersWorksOrWorkedIn.map(async (temp) => {
+                return client.sql`
+                    INSERT INTO volunteers_works_or_worked_in (volunteer_id, team_id)
+                    VALUES (${temp.volunteer_id}, ${temp.team_id})
+                    ON CONFLICT (volunteer_id, team_id) DO NOTHING;
+                `;
+            })
         );
 
-        console.log(`Seeded ${insertedInvoices.length} invoices`);
+        console.log(
+            `Seeded ${insertedVolunteersWorksOrWorkedIn.length} volunteers_works_or_worked_in`
+        );
 
         return {
             createTable,
-            invoices: insertedInvoices,
+            volunteersWorksOrWorkedIn: insertedVolunteersWorksOrWorkedIn,
         };
     } catch (error) {
-        console.error("Error seeding invoices:", error);
+        console.error("Error seeding volunteers_works_or_worked_in:", error);
         throw error;
     }
 }
 
-async function seedCustomers(client) {
+async function seedDonationItems(client) { 
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-        // Create the "customers" table if it doesn't exist
+        // Create the "donationItems" table if it doesn't exist
         const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS customers (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        image_url VARCHAR(255) NOT NULL
-      );
-    `;
+          CREATE TABLE IF NOT EXISTS donation_items (
+            id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+            name VARCHAR(150) NOT NULL UNIQUE,
+            unit VARCHAR(150) NOT NULL
+          );
+        `;
 
-        console.log(`Created "customers" table`);
+        console.log(`Created "donation_items" table`);
 
-        // Insert data into the "customers" table
-        const insertedCustomers = await Promise.all(
-            customers.map(
-                (customer) => client.sql`
-        INSERT INTO customers (id, name, email, image_url)
-        VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-        ON CONFLICT (id) DO NOTHING;
-      `
-            )
+        // Insert data into the "donation_items" table
+        const insertedDonationItems = await Promise.all(
+            donationItems.map(async (item) => {
+                return client.sql`
+                    INSERT INTO donation_items (id, name, unit)
+                    VALUES (${item.id}, ${item.name}, ${item.unit})
+                    ON CONFLICT (id) DO NOTHING;
+                `;
+            })
         );
 
-        console.log(`Seeded ${insertedCustomers.length} customers`);
+        console.log(`Seeded ${insertedDonationItems.length} donation_items`);
 
         return {
             createTable,
-            customers: insertedCustomers,
+            donationItems: insertedDonationItems,
         };
     } catch (error) {
-        console.error("Error seeding customers:", error);
+        console.error("Error seeding donation_items:", error);
         throw error;
     }
 }
 
-async function seedRevenue(client) {
+async function seedCampaignStocks(client) {
     try {
-        // Create the "revenue" table if it doesn't exist
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "campaignStocks" table if it doesn't exist
         const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS revenue (
-        month VARCHAR(4) NOT NULL UNIQUE,
-        revenue INT NOT NULL
-      );
-    `;
+          CREATE TABLE IF NOT EXISTS campaign_stocks (
+            campaign_id UUID NOT NULL,
+            donation_item_id UUID NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(id),
+            FOREIGN KEY (donation_item_id) REFERENCES donation_items(id),
+            PRIMARY KEY (campaign_id, donation_item_id)
+          );
+        `;
 
-        console.log(`Created "revenue" table`);
+        console.log(`Created "campaign_stocks" table`);
 
-        // Insert data into the "revenue" table
-        const insertedRevenue = await Promise.all(
-            revenue.map(
-                (rev) => client.sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `
-            )
+        // Insert data into the "campaign_stocks" table
+        const insertedCampaignStocks = await Promise.all(
+            campaignStocks.map(async (stock) => {
+                return client.sql`
+                    INSERT INTO campaign_stocks (campaign_id, donation_item_id)
+                    VALUES (${stock.campaign_id}, ${stock.donation_item_id})
+                    ON CONFLICT (campaign_id, donation_item_id) DO NOTHING;
+                `;
+            })
         );
 
-        console.log(`Seeded ${insertedRevenue.length} revenue`);
+        console.log(`Seeded ${insertedCampaignStocks.length} campaign_stocks`);
 
         return {
             createTable,
-            revenue: insertedRevenue,
+            campaignStocks: insertedCampaignStocks,
         };
     } catch (error) {
-        console.error("Error seeding revenue:", error);
+        console.error("Error seeding campaign_stocks:", error);
         throw error;
-    }
+    }    
 }
 
-*/
 async function main() {
     const client = await db.connect();
 
-    // await seedMembers(client);
-    // await seedCampaigns(client);
+    await seedMembers(client);
+    await seedCampaigns(client);
     await seedTeams(client);
-    // await seedCustomers(client);
-    // await seedInvoices(client);
-    // await seedRevenue(client);
+    await seedVolunteersWorksOrWorkedIn(client);
+    await seedDonationItems(client);
+    await seedCampaignStocks(client);
 
     await client.end();
 }
