@@ -1,5 +1,5 @@
 const { db } = require("@vercel/postgres");
-const { members, teams, campaigns, volunteersWorksOrWorkedIn, donationItems } = require("../app/lib/placeholder-data.js");
+const { members, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
 async function seedMembers(client) {
@@ -32,8 +32,8 @@ async function seedMembers(client) {
             members.map(async (member) => {
                 const hashedPassword = await bcrypt.hash(member.password, 10);
                 return client.sql`
-        INSERT INTO members (name, phone, email, address, role, password)
-        VALUES (${member.name}, ${member.phone}, ${member.email}, ${member.address}, ${member.role}, ${hashedPassword})
+        INSERT INTO members (id, name, phone, email, address, role, password)
+        VALUES (${member.id}, ${member.name}, ${member.phone}, ${member.email}, ${member.address}, ${member.role}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
             })
@@ -70,8 +70,8 @@ async function seedCampaigns(client) {
         const insertedCampaigns = await Promise.all(
             campaigns.map(async (campaign) => {
                 return client.sql`
-                    INSERT INTO campaigns (name, campaign_leader_id)
-                    VALUES (${campaign.name}, ${campaign.campaign_leader_id})
+                    INSERT INTO campaigns (id, name, campaign_leader_id)
+                    VALUES (${campaign.id}, ${campaign.name}, ${campaign.campaign_leader_id})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
@@ -119,8 +119,8 @@ async function seedTeams(client) {
         const insertedTeams = await Promise.all(
             teams.map(async (team) => {
                 return client.sql`
-                    INSERT INTO teams (name, district, status, team_leader_id, campaign_id)
-                    VALUES (${team.name}, ${team.district}, ${team.status}, ${team.team_leader_id}, ${team.campaign_id})
+                    INSERT INTO teams (id, name, district, status, team_leader_id, campaign_id)
+                    VALUES (${team.id}, ${team.name}, ${team.district}, ${team.status}, ${team.team_leader_id}, ${team.campaign_id})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
@@ -142,9 +142,9 @@ async function seedVolunteersWorksOrWorkedIn(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-        // Create the "VolunteersWorksOrWorkedIn" table if it doesn't exist
+        // Create the "volunteers_works_or_worked_in" table if it doesn't exist
         const createTable = await client.sql`
-          CREATE TABLE IF NOT EXISTS volunteersWorksOrWorkedIn (
+          CREATE TABLE IF NOT EXISTS volunteers_works_or_worked_in (
             volunteer_id UUID NOT NULL,
             team_id UUID NOT NULL,
             FOREIGN KEY (volunteer_id) REFERENCES members(id),
@@ -153,27 +153,29 @@ async function seedVolunteersWorksOrWorkedIn(client) {
           );
         `;
 
-        console.log(`Created "volunteersWorksOrWorkedIn" table`);
+        console.log(`Created "volunteers_works_or_worked_in" table`);
 
-        // Insert data into the "volunteersWorksOrWorkedIn" table
+        // Insert data into the "volunteers_works_or_worked_in" table
         const insertedVolunteersWorksOrWorkedIn = await Promise.all(
             volunteersWorksOrWorkedIn.map(async (temp) => {
                 return client.sql`
-                    INSERT INTO volunteersWorksOrWorkedIn (volunteer_id, team_id)
+                    INSERT INTO volunteers_works_or_worked_in (volunteer_id, team_id)
                     VALUES (${temp.volunteer_id}, ${temp.team_id})
                     ON CONFLICT (volunteer_id, team_id) DO NOTHING;
                 `;
             })
         );
 
-        console.log(`Seeded ${insertedVolunteersWorksOrWorkedIn.length} volunteersWorksOrWorkedIn`);
+        console.log(
+            `Seeded ${insertedVolunteersWorksOrWorkedIn.length} volunteers_works_or_worked_in`
+        );
 
         return {
             createTable,
             volunteersWorksOrWorkedIn: insertedVolunteersWorksOrWorkedIn,
         };
     } catch (error) {
-        console.error("Error seeding volunteersWorksOrWorkedIn:", error);
+        console.error("Error seeding volunteers_works_or_worked_in:", error);
         throw error;
     }
 }
@@ -184,46 +186,88 @@ async function seedDonationItems(client) {
 
         // Create the "donationItems" table if it doesn't exist
         const createTable = await client.sql`
-          CREATE TABLE IF NOT EXISTS donationItems (
+          CREATE TABLE IF NOT EXISTS donation_items (
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
             name VARCHAR(150) NOT NULL UNIQUE,
             unit VARCHAR(150) NOT NULL
           );
         `;
 
-        console.log(`Created "donationItems" table`);
+        console.log(`Created "donation_items" table`);
 
-        // Insert data into the "donationItems" table
+        // Insert data into the "donation_items" table
         const insertedDonationItems = await Promise.all(
             donationItems.map(async (item) => {
                 return client.sql`
-                    INSERT INTO donationItems (name, unit)
-                    VALUES (${item.name}, ${item.unit})
+                    INSERT INTO donation_items (id, name, unit)
+                    VALUES (${item.id}, ${item.name}, ${item.unit})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
         );
 
-        console.log(`Seeded ${insertedDonationItems.length} donationItems`);
+        console.log(`Seeded ${insertedDonationItems.length} donation_items`);
 
         return {
             createTable,
             donationItems: insertedDonationItems,
         };
     } catch (error) {
-        console.error("Error seeding donationItems:", error);
+        console.error("Error seeding donation_items:", error);
         throw error;
     }
+}
+
+async function seedCampaignStocks(client) {
+    try {
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "campaignStocks" table if it doesn't exist
+        const createTable = await client.sql`
+          CREATE TABLE IF NOT EXISTS campaign_stocks (
+            campaign_id UUID NOT NULL,
+            donation_item_id UUID NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(id),
+            FOREIGN KEY (donation_item_id) REFERENCES donation_items(id),
+            PRIMARY KEY (campaign_id, donation_item_id)
+          );
+        `;
+
+        console.log(`Created "campaign_stocks" table`);
+
+        // Insert data into the "campaign_stocks" table
+        const insertedCampaignStocks = await Promise.all(
+            campaignStocks.map(async (stock) => {
+                return client.sql`
+                    INSERT INTO campaign_stocks (campaign_id, donation_item_id)
+                    VALUES (${stock.campaign_id}, ${stock.donation_item_id})
+                    ON CONFLICT (campaign_id, donation_item_id) DO NOTHING;
+                `;
+            })
+        );
+
+        console.log(`Seeded ${insertedCampaignStocks.length} campaign_stocks`);
+
+        return {
+            createTable,
+            campaignStocks: insertedCampaignStocks,
+        };
+    } catch (error) {
+        console.error("Error seeding campaign_stocks:", error);
+        throw error;
+    }    
 }
 
 async function main() {
     const client = await db.connect();
 
-    // await seedMembers(client);
-    // await seedCampaigns(client);
-    // await seedTeams(client);
-    // await seedVolunteersWorksOrWorkedIn(client);
+    await seedMembers(client);
+    await seedCampaigns(client);
+    await seedTeams(client);
+    await seedVolunteersWorksOrWorkedIn(client);
     await seedDonationItems(client);
+    await seedCampaignStocks(client);
 
     await client.end();
 }
