@@ -762,6 +762,51 @@ const reliefs = [
     },
 ];
 
+const recipientReceiveRelief = [
+    {
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+        recipient_id: "5ba2632e-80f9-4129-9532-845fd30e110e",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 5,
+    },
+    {
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+        recipient_id: "13953a84-e63b-4ece-9f60-dd329baaf5e1",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 10,
+    },
+    {
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+        recipient_id: "2feb3c7e-e923-4f07-981f-746e8409a847",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 3,
+    },
+    {
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+        recipient_id: "13953a84-e63b-4ece-9f60-dd329baaf5e1",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 1000,
+    },
+    {
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+        recipient_id: "7f5fd25e-bfbb-487a-bc7f-33b4e94da628",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 1000,
+    },
+    {
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+        recipient_id: "23e56313-7fca-48b9-9ab4-39fa3247a056",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 1000,
+    },
+    {
+        relief_id: "428a4ef6-86f1-4d53-8247-009af4359f13",
+        recipient_id: "5ba2632e-80f9-4129-9532-845fd30e110e",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 1000,
+    },
+];
+
 module.exports = {
     users,
     teams,
@@ -770,4 +815,5 @@ module.exports = {
     donationItems,
     campaignStocks,
     reliefs,
+    recipientReceiveRelief,
 };

@@ -1,5 +1,5 @@
 const { db } = require("@vercel/postgres");
-const { users, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks, reliefs } = require("../app/lib/placeholder-data.js");
+const { users, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks, reliefs, reliefRecipients, recipientReceiveRelief } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
 async function seedUsers(client) {
@@ -306,16 +306,62 @@ async function seedCampaignStocks(client) {
     }    
 }
 
+async function seedRecipientReceiveRelief(client) {
+    try {
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "recipient_receive_relief" table if it doesn't exist
+        const createTable = await client.sql`
+          CREATE TABLE IF NOT EXISTS recipient_receive_relief (
+            relief_id UUID NOT NULL,
+            recipient_id UUID NOT NULL,
+            donation_item_id UUID NOT NULL,
+            quantity INTEGER NOT NULL,
+            FOREIGN KEY (relief_id) REFERENCES reliefs(id),
+            FOREIGN KEY (recipient_id) REFERENCES users(id),
+            FOREIGN KEY (donation_item_id) REFERENCES donation_items(id),
+            PRIMARY KEY (relief_id, recipient_id)
+          );
+        `;
+
+        console.log(`Created "recipient_receive_relief" table`);
+
+        // Insert data into the "recipient_receive_relief" table
+        const insertedRecipientReceiveRelief = await Promise.all(
+            recipientReceiveRelief.map(async (temp) => {
+                return client.sql`
+                    INSERT INTO recipient_receive_relief (relief_id, recipient_id, donation_item_id, quantity)
+                    VALUES (${temp.relief_id}, ${temp.recipient_id}, ${temp.donation_item_id}, ${temp.quantity})
+                    ON CONFLICT (relief_id, recipient_id) DO NOTHING;
+                `;
+            })
+        );
+
+        console.log(
+            `Seeded ${insertedRecipientReceiveRelief.length} recipient_receive_relief`
+        );
+
+        return {
+            createTable,
+            recipientReceiveRelief: insertedRecipientReceiveRelief,
+        };
+    } catch (error) {
+        console.error("Error seeding relief_recipients:", error);
+        throw error;
+    }
+}
+
 async function main() {
     const client = await db.connect();
 
-    await seedUsers(client);
-    await seedCampaigns(client);
-    await seedTeams(client);
-    await seedVolunteersWorksOrWorkedIn(client);
-    await seedDonationItems(client);
-    await seedCampaignStocks(client);
-    await seedReliefs(client);
+    // await seedUsers(client);
+    // await seedCampaigns(client);
+    // await seedTeams(client);
+    // await seedVolunteersWorksOrWorkedIn(client);
+    // await seedDonationItems(client);
+    // await seedCampaignStocks(client);
+    // await seedReliefs(client);
+    // await seedRecipientReceiveRelief(client);
 
     await client.end();
 }
