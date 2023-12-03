@@ -152,6 +152,183 @@ const members = [
         role: "moderator",
         password: "123456",
     },
+    {
+        name: "Liam Miller",
+        phone: "01700000025",
+        email: "liammiller@gmail.com",
+        address: "Stockholm, Sweden",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Noah Smith",
+        phone: "01700000026",
+        email: "noahsmith@gmail.com",
+        address: "Budapest, Hungary",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "William Brown",
+        phone: "01700000027",
+        email: "williambrown@gmail.com",
+        address: "Prague, Czech Republic",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "James Johnson",
+        phone: "01700000028",
+        email: "jamesjohnson@gmail.com",
+        address: "Warsaw, Poland",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Benjamin Jones",
+        phone: "01700000029",
+        email: "benjaminjones@gmail.com",
+        address: "Kiev, Ukraine",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Logan Williams",
+        phone: "01700000030",
+        email: "loganwilliams@gmail.com",
+        address: "Moscow, Russia",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Alexander Taylor",
+        phone: "01700000031",
+        email: "alexanderrtaylor@gmail.com",
+        address: "Istanbul, Turkey",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Elijah Wilson",
+        phone: "01700000032",
+        email: "elijahwilson@gmail.com",
+        address: "Dubai, UAE",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Jacob Jackson",
+        phone: "01700000033",
+        email: "jacobjackson@gmail.com",
+        address: "Bangkok, Thailand",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Anthony White",
+        phone: "01700000034",
+        email: "anthonywhite@gmail.com",
+        address: "Singapore",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Harrison Harris",
+        phone: "01700000035",
+        email: "harrisondharris@gmail.com",
+        address: "Kuala Lumpur, Malaysia",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Daniel Martin",
+        phone: "01700000036",
+        email: "danielmartin@gmail.com",
+        address: "Taipei, Taiwan",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Sebastian Clark",
+        phone: "01700000037",
+        email: "sebastianclark@gmail.com",
+        address: "Seoul, South Korea",
+        role: "volunteer",
+        password: "123456",
+    },
+
+    {
+        name: "Mateo Garcia",
+        phone: "01700000039",
+        email: "mateogarcia@gmail.com",
+        address: "Osaka, Japan",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Julian Lopez",
+        phone: "01700000040",
+        email: "julianlopez@gmail.com",
+        address: "Mexico City, Mexico",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Wyatt Gonzalez",
+        phone: "01700000041",
+        email: "wyattgonzalez@gmail.com",
+        address: "São Paulo, Brazil",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Nathan Sanchez",
+        phone: "01700000042",
+        email: "nathansanchez@gmail.com",
+        address: "Buenos Aires, Argentina",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Christopher Ramirez",
+        phone: "01700000043",
+        email: "christopherramirez@gmail.com",
+        address: "Lima, Peru",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Lucas Pérez",
+        phone: "01700000044",
+        email: "lucasperez@gmail.com",
+        address: "Bogotá, Colombia",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Jack Scott",
+        phone: "01700000045",
+        email: "jackscott@gmail.com",
+        address: "Santiago, Chile",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Ethan Edwards",
+        phone: "01700000046",
+        email: "ethanedwards@gmail.com",
+        address: "Caracas, Venezuela",
+        role: "volunteer",
+        password: "123456",
+    },
+    {
+        name: "Aiden Morgan",
+        phone: "01700000047",
+        email: "aidenmorgan@gmail.com",
+        address: "Quito, Ecuador",
+        role: "volunteer",
+        password: "123456",
+    },
 ];
 
 const campaigns = [
@@ -229,8 +406,89 @@ const teams = [
     },
 ];
 
+const volunteersWorksOrWorkedIn = [
+    {
+        volunteer_id: "d338d964-d308-4426-abb9-2f283c995529",
+        team_id: "f8cadfb0-9966-4f5f-8204-85100085ecc2",
+    },
+    {
+        volunteer_id: "d338d964-d308-4426-abb9-2f283c995529",
+        team_id: "78651821-6008-48ba-914f-dd9b40c93e46",
+    },
+    {
+        volunteer_id: "35d57e6e-6814-4f99-a87f-181d045a253f",
+        team_id: "f8cadfb0-9966-4f5f-8204-85100085ecc2",
+    },
+    {
+        volunteer_id: "35d57e6e-6814-4f99-a87f-181d045a253f",
+        team_id: "2ce2e3cf-314e-46ae-9e19-c2ece536eb92",
+    },
+    {
+        volunteer_id: "7c32e9c0-8b37-4331-a568-49ac81e5ab03",
+        team_id: "f8cadfb0-9966-4f5f-8204-85100085ecc2",
+    },
+    {
+        volunteer_id: "7c32e9c0-8b37-4331-a568-49ac81e5ab03",
+        team_id: "09f6b272-8481-40b0-a6c8-0cd0288f1a9c",
+    },
+    {
+        volunteer_id: "45dc6792-bfbd-42fa-bdb7-8ec6d79e5610",
+        team_id: "f8cadfb0-9966-4f5f-8204-85100085ecc2",
+    },
+    {
+        volunteer_id: "45dc6792-bfbd-42fa-bdb7-8ec6d79e5610",
+        team_id: "c5c58430-b041-4c93-b711-425cf61251ca",
+    },
+    {
+        volunteer_id: "903779a1-def2-4475-bd2f-7a0f14f05aa9",
+        team_id: "20314f91-9bd1-489d-bbd1-3c69e3bea1d1",
+    },
+    {
+        volunteer_id: "903779a1-def2-4475-bd2f-7a0f14f05aa9",
+        team_id: "7d0551ac-646b-4e77-b18c-c42fcb0b459c",
+    },
+    {
+        volunteer_id: "92aadd2a-bd52-44fe-b75b-c8b2f4b8d728",
+        team_id: "f8cadfb0-9966-4f5f-8204-85100085ecc2",
+    },
+];
+
+const donationItems = [
+    {
+        name: "Rice",
+        unit: "kg",
+    },
+    {
+        name: "Lentils",
+        unit: "kg",
+    },
+    {
+        name: "Potatoes",
+        unit: "kg",
+    },
+    {
+        name: "Money",
+        unit: "BDT",
+    },
+    {
+        name: "Clothes",
+        unit: "piece",
+    },
+    {
+        name: "Books",
+        unit: "piece",
+    },
+    {
+        name: "Toys",
+        unit: "piece",
+    },
+]
+
+
 module.exports = {
     members,
     teams,
-    campaigns
+    campaigns,
+    volunteersWorksOrWorkedIn,
+    donationItems,
 };
