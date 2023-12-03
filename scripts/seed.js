@@ -1,52 +1,59 @@
 const { db } = require("@vercel/postgres");
-const { members, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks } = require("../app/lib/placeholder-data.js");
+const { users, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks, reliefs } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
-async function seedMembers(client) {
+async function seedUsers(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-        // Create the "members" table if it doesn't exist
+        // Create the "users" table if it doesn't exist
         const createTable = await client.sql`
         DO $$ BEGIN
-          IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'member_role') THEN
-            DROP TYPE member_role;
+          IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+            DROP TYPE user_role;
           END IF;
         END $$;
-        CREATE TYPE member_role AS ENUM ('president', 'moderator', 'volunteer', 'member');
-          CREATE TABLE IF NOT EXISTS members (
+        DO $$ BEGIN
+          IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_type') THEN
+            DROP TYPE user_type;
+          END IF;
+        END $$;
+        CREATE TYPE member_role AS ENUM ('president', 'moderator', 'volunteer');
+        CREATE TYPE user_type AS ENUM ('donor', 'recipient');
+          CREATE TABLE IF NOT EXISTS users (
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             phone VARCHAR(20) NOT NULL,
             email TEXT NOT NULL UNIQUE,
             address TEXT NOT NULL,
-            role member_role NOT NULL,
+            role member_role,
+            type user_type NOT NULL,
             password TEXT NOT NULL
           );
         `;
 
-        console.log(`Created "members" table`);
+        console.log(`Created "users" table`);
 
-        // Insert data into the "members" table
-        const insertedMembers = await Promise.all(
-            members.map(async (member) => {
-                const hashedPassword = await bcrypt.hash(member.password, 10);
+        // Insert data into the "users" table
+        const insertedUsers = await Promise.all(
+            users.map(async (user) => {
+                const hashedPassword = await bcrypt.hash(user.password, 10);
                 return client.sql`
-        INSERT INTO members (id, name, phone, email, address, role, password)
-        VALUES (${member.id}, ${member.name}, ${member.phone}, ${member.email}, ${member.address}, ${member.role}, ${hashedPassword})
+        INSERT INTO users (id, name, phone, email, address, role, type, password)
+        VALUES (${user.id}, ${user.name}, ${user.phone}, ${user.email}, ${user.address}, ${user.role}, ${user.type},${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
             })
         );
 
-        console.log(`Seeded ${insertedMembers.length} members`);
+        console.log(`Seeded ${insertedUsers.length} users`);
 
         return {
             createTable,
-            members: insertedMembers,
+            users: insertedUsers,
         };
     } catch (error) {
-        console.error("Error seeding members:", error);
+        console.error("Error seeding users:", error);
         throw error;
     }
 }
@@ -60,7 +67,7 @@ async function seedCampaigns(client) {
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
             name VARCHAR(150) NOT NULL UNIQUE,
             campaign_leader_id UUID NOT NULL,
-            FOREIGN KEY (campaign_leader_id) REFERENCES members(id)
+            FOREIGN KEY (campaign_leader_id) REFERENCES users(id)
           );
         `;
 
@@ -108,7 +115,7 @@ async function seedTeams(client) {
             status team_status NOT NULL,
             team_leader_id UUID NOT NULL,
             campaign_id UUID NOT NULL,
-            FOREIGN KEY (team_leader_id) REFERENCES members(id),
+            FOREIGN KEY (team_leader_id) REFERENCES users(id),
             FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
           );
         `;
@@ -147,7 +154,7 @@ async function seedVolunteersWorksOrWorkedIn(client) {
           CREATE TABLE IF NOT EXISTS volunteers_works_or_worked_in (
             volunteer_id UUID NOT NULL,
             team_id UUID NOT NULL,
-            FOREIGN KEY (volunteer_id) REFERENCES members(id),
+            FOREIGN KEY (volunteer_id) REFERENCES users(id),
             FOREIGN KEY (team_id) REFERENCES teams(id),
             PRIMARY KEY (volunteer_id, team_id)
           );
@@ -176,6 +183,46 @@ async function seedVolunteersWorksOrWorkedIn(client) {
         };
     } catch (error) {
         console.error("Error seeding volunteers_works_or_worked_in:", error);
+        throw error;
+    }
+}
+
+async function seedReliefs(client) { 
+    try {
+        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+        // Create the "reliefs" table if it doesn't exist
+        const createTable = await client.sql`
+          CREATE TABLE IF NOT EXISTS reliefs (
+            id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+            name VARCHAR(150) NOT NULL UNIQUE,
+            location VARCHAR(150) NOT NULL,
+            campaign_id UUID NOT NULL,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
+          );
+        `;
+
+        console.log(`Created "reliefs" table`);
+
+        // Insert data into the "reliefs" table
+        const insertedReliefs = await Promise.all(
+            reliefs.map(async (relief) => {
+                return client.sql`
+                    INSERT INTO reliefs (id, name, location, campaign_id)
+                    VALUES (${relief.id}, ${relief.name}, ${relief.location}, ${relief.campaign_id})
+                    ON CONFLICT (id) DO NOTHING;
+                `;
+            })
+        );
+
+        console.log(`Seeded ${insertedReliefs.length} reliefs`);
+
+        return {
+            createTable,
+            reliefs: insertedReliefs,
+        };
+    } catch (error) {
+        console.error("Error seeding reliefs:", error);
         throw error;
     }
 }
@@ -262,12 +309,13 @@ async function seedCampaignStocks(client) {
 async function main() {
     const client = await db.connect();
 
-    await seedMembers(client);
+    await seedUsers(client);
     await seedCampaigns(client);
     await seedTeams(client);
     await seedVolunteersWorksOrWorkedIn(client);
     await seedDonationItems(client);
     await seedCampaignStocks(client);
+    await seedReliefs(client);
 
     await client.end();
 }
