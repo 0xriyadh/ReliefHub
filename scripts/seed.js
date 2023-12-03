@@ -393,13 +393,6 @@ async function seedTeamWorksWithRelief(client) {
     }
 }
 
-        // id: "b9f5e351-dd9e-4d78-b044-71e7662462ed",
-        // donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
-        // quantity: 50000,
-        // status: "pending",
-        // relief_id: null,
-        // campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
-        // donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
 async function seedTransactions(client) { 
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
