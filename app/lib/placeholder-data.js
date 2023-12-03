@@ -72,8 +72,165 @@ const members = [
         role: "volunteer",
         password: "123456",
     },
+    {
+        name: "Oliver Taylor",
+        phone: "01700000015",
+        email: "olivertaylor@gmail.com",
+        address: "Madrid, Spain",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Charlotte Wilson",
+        phone: "01700000016",
+        email: "charlottewilson@gmail.com",
+        address: "Amsterdam, Netherlands",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Harper Thomas",
+        phone: "01700000017",
+        email: "harperthomas@gmail.com",
+        address: "Vienna, Austria",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Evelyn Jackson",
+        phone: "01700000018",
+        email: "evelynjackson@gmail.com",
+        address: "Brussels, Belgium",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Jack White",
+        phone: "01700000019",
+        email: "jackwhite@gmail.com",
+        address: "Zurich, Switzerland",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Ava Harris",
+        phone: "01700000020",
+        email: "avaharris@gmail.com",
+        address: "Helsinki, Finland",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Mason Martin",
+        phone: "01700000021",
+        email: "masonmartin@gmail.com",
+        address: "Oslo, Norway",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Sophia Clark",
+        phone: "01700000022",
+        email: "sophiaclark@gmail.com",
+        address: "Copenhagen, Denmark",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Lucas Rodriguez",
+        phone: "01700000023",
+        email: "lucasrodriguez@gmail.com",
+        address: "Lisbon, Portugal",
+        role: "moderator",
+        password: "123456",
+    },
+    {
+        name: "Chloe Lewis",
+        phone: "01700000024",
+        email: "chloelewis@gmail.com",
+        address: "Dublin, Ireland",
+        role: "moderator",
+        password: "123456",
+    },
+];
+
+const campaigns = [
+    {
+        name: "Ramadan Campaign 2023",
+        campaign_leader_id: "3f349d27-7347-447c-b994-ae41a5a74bc6",
+    },
+    {
+        name: "Eid Campaign 2023",
+        campaign_leader_id: "4f20c55b-7dc4-4529-a949-30b447bd8e64",
+    },
+    {
+        name: "Winter Campaign 2023",
+        campaign_leader_id: "3dbe4f32-a78c-4f8f-81a5-e7e9b87a8c2c",
+    },
+    {
+        name: "Ramadan Campaign 2024",
+        campaign_leader_id: "bec1a7c7-01fa-4ca5-86fe-03dd029984c0",
+    },
+    {
+        name: "Eid Campaign 2024",
+        campaign_leader_id: "9470e757-4b34-40ba-8912-920bdea087b5",
+    },
+];
+
+const teams = [
+    {
+        name: "Pheonix Knights",
+        district: "Dhaka",
+        status: "active",
+        team_leader_id: "0f131707-3435-44c3-9832-1ca34c4d1cba",
+        campaign_id: "d0eaef60-0bc4-439e-bba3-89385a9996a9",
+    },
+    {
+        name: "Final Crusaders",
+        district: "Dhaka",
+        status: "active",
+        team_leader_id: "fcf80fce-e1fc-4e7b-bf64-7778e99ce028",
+        campaign_id: "d0eaef60-0bc4-439e-bba3-89385a9996a9",
+    },
+    {
+        name: "Knights of the Round Table",
+        district: "Sylhet",
+        status: "archived",
+        team_leader_id: "4f20c55b-7dc4-4529-a949-30b447bd8e64",
+        campaign_id: "ee989474-c035-4d57-834e-9b935ed6d0bf",
+    },
+    {
+        name: "Zombie Slayers",
+        district: "Chittagong",
+        status: "active",
+        team_leader_id: "3eb56f0b-9136-4c91-9bc0-2727603b4485",
+        campaign_id: "667645fb-d6e8-44b1-9689-c9f004a43472",
+    },
+    {
+        name: "Elite Mercenaries",
+        district: "Dhaka",
+        status: "archived",
+        team_leader_id: "76850a9e-f26a-4dd7-b449-2fa816e64052",
+        campaign_id: "fbed1349-0293-41f8-aac3-ed6d404159b6",
+    },
+    {
+        name: "Bounty Hunters",
+        district: "Mymensingh",
+        status: "active",
+        team_leader_id: "951db1f6-48fc-485e-94d0-2625b3ecbb9d",
+        campaign_id: "46282f39-812a-45aa-aede-79040451ca26",
+    },
+    {
+        name: "Locked and Loaded",
+        district: "Dhaka",
+        status: "active",
+        team_leader_id: "3dbe4f32-a78c-4f8f-81a5-e7e9b87a8c2c",
+        campaign_id: "46282f39-812a-45aa-aede-79040451ca26",
+    },
 ];
 
 module.exports = {
-  members
+    members,
+    teams,
+    campaigns
 };
