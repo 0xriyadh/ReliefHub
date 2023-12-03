@@ -762,6 +762,150 @@ const reliefs = [
     },
 ];
 
+const teamWorksWithRelief = [
+    {
+        team_id: "70778cc4-4667-4c37-8354-ab97bf58906c",
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+    },
+    {
+        team_id: "70778cc4-4667-4c37-8354-ab97bf58906c",
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+    },
+    {
+        team_id: "c738c231-8a87-4495-947a-1691558b2545",
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+    },
+    {
+        team_id: "70778cc4-4667-4c37-8354-ab97bf58906c",
+        relief_id: "428a4ef6-86f1-4d53-8247-009af4359f13",
+    },
+    {
+        team_id: "c738c231-8a87-4495-947a-1691558b2545",
+        relief_id: "4f13ccba-e67f-481b-9bd4-2a3da7d3ab22",
+    },
+    {
+        team_id: "f26df159-869a-445e-9f5d-c24fb826cd1b",
+        relief_id: "406d0ce9-6038-4d53-a1d5-14ba99ab7ef0",
+    },
+    {
+        team_id: "f26df159-869a-445e-9f5d-c24fb826cd1b",
+        relief_id: "4f13ccba-e67f-481b-9bd4-2a3da7d3ab22",
+    },
+    {
+        team_id: "f26df159-869a-445e-9f5d-c24fb826cd1b",
+        relief_id: "428a4ef6-86f1-4d53-8247-009af4359f13",
+    },
+    {
+        team_id: "fc39ba31-8c4b-4c8f-bd2b-8d68be09b397",
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+    },
+];
+
+const transactions = [
+    // 8 donations
+    {
+        id: "b9f5e351-dd9e-4d78-b044-71e7662462ed",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 50000,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+    },
+    {
+        id: "22233872-8082-4e19-80b1-7325edfcbcbc",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 30000,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
+        donor_id: "71718621-4643-4217-a851-85d516e7455f",
+    },
+    {
+        id: "b3204315-9b29-4b68-8626-0c42b52ad8d7",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 300,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+    },
+    {
+        id: "519cd5f5-0ef6-468c-92d9-49f12872570c",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 250,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
+        donor_id: "71718621-4643-4217-a851-85d516e7455f",
+    },
+    {
+        id: "cbaaca28-8e0f-482f-b573-cedd57702ab7",
+        donation_item_id: "9adc5ae2-20aa-4876-bbc1-a025ab763667",
+        quantity: 50,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
+        donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+    },
+    {
+        id: "0b6d9690-f827-45ab-bed0-f15e413596b0",
+        donation_item_id: "9adc5ae2-20aa-4876-bbc1-a025ab763667",
+        quantity: 30,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+    },
+    {
+        id: "0e16b604-1235-4b42-a2ab-84d763dc7273",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 20000,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
+        donor_id: "71718621-4643-4217-a851-85d516e7455f",
+    },
+    {
+        id: "cc38d8df-84d0-4f26-9d7f-dd2371cf2b21",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 45000,
+        status: "pending",
+        relief_id: null,
+        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
+        donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+    },
+
+    // 3 reliefs
+    {
+        id: "6bc48e3a-3cac-4cf5-919c-c0ceec5bfae2",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 200,
+        status: "distributed",
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
+        donor_id: null,
+    },
+    {
+        id: "f073a4c6-cbac-4e35-a8f2-5e1c87acc744",
+        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        quantity: 100,
+        status: "pending",
+        relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
+        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        donor_id: null,
+    },
+    {
+        id: "aca0ec30-7273-4ddd-8e69-dcc2fa56bed6",
+        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        quantity: 60000,
+        status: "pending",
+        relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
+        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
+        donor_id: null,
+    },
+];
+
 const recipientReceiveRelief = [
     {
         relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
@@ -816,4 +960,6 @@ module.exports = {
     campaignStocks,
     reliefs,
     recipientReceiveRelief,
+    teamWorksWithRelief,
+    transactions,
 };
