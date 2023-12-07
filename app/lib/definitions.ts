@@ -22,3 +22,14 @@ export type CampaignsTable = {
     status: string;
     timestamp: string;
 };
+
+export type CampaignForm = {
+    name: string;
+    campaign_leader_id: string;
+    status: 'active' | 'archived';
+};
+
+export type ModeratorsField = {
+    id: string;
+    name: string;
+}

@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
-import { CampaignsTable, LatestDonations, LatestReliefs } from "./definitions";
+import { CampaignForm, CampaignsTable, LatestDonations, LatestReliefs, ModeratorsField } from "./definitions";
 
 export async function fetchCardData() {
     noStore();
@@ -160,7 +160,7 @@ export async function fetchCampaignsPages(query: string) {
         WHERE
             u.name ILIKE ${`%${query}%`} OR
             c.name ILIKE ${`%${query}%`} OR
-            c.status::text ILIKE ${`%${query}%`}`;
+            c.status::text ILIKE ${`%${query}%`};`;
 
         const totalPages = Math.ceil(
             Number(count.rows[0].count) / ITEMS_PER_PAGE
@@ -169,5 +169,52 @@ export async function fetchCampaignsPages(query: string) {
     } catch (error) {
         console.error("Database Error:", error);
         throw new Error("Failed to fetch total number of campaigns.");
+    }
+}
+
+export async function fetchCampaign(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<CampaignForm>`
+        SELECT
+            name, 
+            campaign_leader_id,
+            status
+        FROM 
+            campaigns
+        WHERE
+            id = ${id};
+    `;
+
+    const campaigns = data.rows;
+    return campaigns;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error("Failed to fetch all campaigns.");
+  }
+}
+
+export async function fetchModerators() {
+    noStore();
+
+    try {
+        const data = await sql<ModeratorsField>`
+        SELECT
+            id, 
+            name
+        FROM 
+            users
+        WHERE
+            role = 'moderator'
+        ORDER BY
+            name ASC;
+    `;
+
+        const moderators = data.rows;
+        return moderators;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch all moderators.");
     }
 }

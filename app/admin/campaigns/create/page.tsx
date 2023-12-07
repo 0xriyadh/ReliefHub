@@ -1,11 +1,26 @@
-import React from 'react';
+// import Form from "@/app/ui/invoices/create-form";
+// import { fetchCustomers } from "@/app/lib/data";
+import { fetchModerators } from "@/app/lib/data";
+import Breadcrumbs from "@/app/ui/campaigns/breadcrumbs";
+import CreateForm from "@/app/ui/campaigns/create-form";
 
-const Page = () => {
-  return (
-    <div>
-      Create
-    </div>
-  );
-};
+export default async function Page() {
+    const moderators = await fetchModerators();
 
-export default Page;
+    return (
+        <main>
+            <Breadcrumbs
+                breadcrumbs={[
+                    { label: "Campaigns", href: "/admin/campaigns" },
+                    {
+                        label: "Create Campaign",
+                        href: "/admin/campaigns/create",
+                        active: true,
+                    },
+                ]}
+            />
+
+            <CreateForm moderators={moderators} />
+        </main>
+    );
+}
