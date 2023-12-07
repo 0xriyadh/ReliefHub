@@ -6,6 +6,6 @@ export const roboto = Roboto_Serif({
 });
 
 export const quicksand = Quicksand({
-    weight: ["300", "400", "500", "600"],
+    weight: ["300", "400", "500", "600", "700"],
     subsets: ["latin"],
 });
