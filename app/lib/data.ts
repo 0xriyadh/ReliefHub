@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
-import { LatestDonations, LatestReliefs } from "./definitions";
+import { CampaignsTable, LatestDonations, LatestReliefs } from "./definitions";
 
 export async function fetchCardData() {
     noStore();
@@ -67,9 +67,7 @@ export async function fetchLatestDonations() {
         console.log("Fetching latest donations ...");
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const latestDonations = data.rows.map((donation) => ({
-            ...donation,
-        }));
+        const latestDonations = data.rows;
 
         console.log("Data fetch completed after 1 second.");
         return latestDonations;
@@ -78,6 +76,7 @@ export async function fetchLatestDonations() {
         throw new Error("Failed to fetch the latest donations.");
     }
 }
+
 export async function fetchLatestReliefs() {
     noStore();
 
@@ -100,14 +99,75 @@ export async function fetchLatestReliefs() {
         console.log("Fetching reliefs data...");
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const latestReliefs = data.rows.map((relief) => ({
-            ...relief,
-        }));
+        const latestReliefs = data.rows;
 
         console.log("Data fetch completed after 1 second.");
         return latestReliefs;
     } catch (error) {
         console.error("Database Error:", error);
         throw new Error("Failed to fetch the latest reliefs.");
+    }
+}
+
+const ITEMS_PER_PAGE = 5;
+export async function fetchFilteredCampaigns(
+    query: string,
+    currentPage: number
+) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    try {
+        console.log("Fetching filtered campaigns ...");
+        const campaigns = await sql<CampaignsTable>`
+        SELECT 
+            c.id,
+            c.name,
+            c.campaign_leader_id,
+            u.name AS campaign_leader_name,
+            c.status,
+            c.timestamp
+        FROM 
+            campaigns c
+        JOIN 
+            users u ON c.campaign_leader_id = u.id
+        WHERE
+            u.name ILIKE ${`%${query}%`} OR
+            c.name ILIKE ${`%${query}%`} OR
+            c.status::text ILIKE ${`%${query}%`} OR
+            c.timestamp::text ILIKE ${`%${query}%`}
+        ORDER BY 
+            c.timestamp DESC
+        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};`;
+        // await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log("Fetching filtered campaigns completed after 1 sec. ");
+        return campaigns.rows;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch filtered campaigns.");
+    }
+}
+
+export async function fetchCampaignsPages(query: string) {
+    noStore();
+
+    try {
+        const count = await sql`SELECT COUNT(*)
+        FROM 
+            campaigns c
+        JOIN 
+            users u ON c.campaign_leader_id = u.id
+        WHERE
+            u.name ILIKE ${`%${query}%`} OR
+            c.name ILIKE ${`%${query}%`} OR
+            c.status::text ILIKE ${`%${query}%`}`;
+
+        const totalPages = Math.ceil(
+            Number(count.rows[0].count) / ITEMS_PER_PAGE
+        );
+        return totalPages;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch total number of campaigns.");
     }
 }

@@ -1,5 +1,17 @@
 const { db } = require("@vercel/postgres");
-const { users, teams, campaigns, volunteersWorksOrWorkedIn, donationItems, campaignStocks, reliefs, reliefRecipients, recipientReceiveRelief, teamWorksWithRelief, transactions } = require("../app/lib/placeholder-data.js");
+const {
+    users,
+    teams,
+    campaigns,
+    volunteersWorksOrWorkedIn,
+    donationItems,
+    campaignStocks,
+    reliefs,
+    reliefRecipients,
+    recipientReceiveRelief,
+    teamWorksWithRelief,
+    transactions,
+} = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
 
 async function seedUsers(client) {
@@ -63,10 +75,18 @@ async function seedCampaigns(client) {
 
         // Create the "campaigns" table if it doesn't exist
         const createTable = await client.sql`
+        DO $$ BEGIN
+          IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'campaign_status') THEN
+            DROP TYPE campaign_status;
+          END IF;
+        END $$;
+        CREATE TYPE campaign_status AS ENUM ('active', 'archived');
           CREATE TABLE IF NOT EXISTS campaigns (
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
             name VARCHAR(150) NOT NULL UNIQUE,
             campaign_leader_id UUID NOT NULL,
+            status campaign_status NOT NULL DEFAULT 'active',
+            timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
             FOREIGN KEY (campaign_leader_id) REFERENCES users(id)
           );
         `;
@@ -77,8 +97,8 @@ async function seedCampaigns(client) {
         const insertedCampaigns = await Promise.all(
             campaigns.map(async (campaign) => {
                 return client.sql`
-                    INSERT INTO campaigns (id, name, campaign_leader_id)
-                    VALUES (${campaign.id}, ${campaign.name}, ${campaign.campaign_leader_id})
+                    INSERT INTO campaigns (id, name, campaign_leader_id, status, timestamp)
+                    VALUES (${campaign.id}, ${campaign.name}, ${campaign.campaign_leader_id}, ${campaign.status}, ${campaign.timestamp})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
@@ -187,7 +207,7 @@ async function seedVolunteersWorksOrWorkedIn(client) {
     }
 }
 
-async function seedReliefs(client) { 
+async function seedReliefs(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
@@ -228,7 +248,7 @@ async function seedReliefs(client) {
     }
 }
 
-async function seedDonationItems(client) { 
+async function seedDonationItems(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
@@ -304,7 +324,7 @@ async function seedCampaignStocks(client) {
     } catch (error) {
         console.error("Error seeding campaign_stocks:", error);
         throw error;
-    }    
+    }
 }
 
 async function seedRecipientReceiveRelief(client) {
@@ -318,6 +338,7 @@ async function seedRecipientReceiveRelief(client) {
             recipient_id UUID NOT NULL,
             donation_item_id UUID NOT NULL,
             quantity INTEGER NOT NULL,
+            timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
             FOREIGN KEY (relief_id) REFERENCES reliefs(id),
             FOREIGN KEY (recipient_id) REFERENCES users(id),
             FOREIGN KEY (donation_item_id) REFERENCES donation_items(id),
@@ -331,8 +352,8 @@ async function seedRecipientReceiveRelief(client) {
         const insertedRecipientReceiveRelief = await Promise.all(
             recipientReceiveRelief.map(async (temp) => {
                 return client.sql`
-                    INSERT INTO recipient_receive_relief (relief_id, recipient_id, donation_item_id, quantity)
-                    VALUES (${temp.relief_id}, ${temp.recipient_id}, ${temp.donation_item_id}, ${temp.quantity})
+                    INSERT INTO recipient_receive_relief (relief_id, recipient_id, donation_item_id, quantity, timestamp)
+                    VALUES (${temp.relief_id}, ${temp.recipient_id}, ${temp.donation_item_id}, ${temp.quantity}, ${temp.timestamp})
                     ON CONFLICT (relief_id, recipient_id) DO NOTHING;
                 `;
             })
@@ -394,7 +415,7 @@ async function seedTeamWorksWithRelief(client) {
     }
 }
 
-async function seedTransactions(client) { 
+async function seedTransactions(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
