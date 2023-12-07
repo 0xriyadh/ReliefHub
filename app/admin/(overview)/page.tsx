@@ -1,5 +1,4 @@
 // import RevenueChart from "@/app/ui/dashboard/revenue-chart";
-// import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
 import { Suspense } from "react";
 import {
     CardsSkeleton,
@@ -7,6 +6,7 @@ import {
     RevenueChartSkeleton,
 } from "@/app/ui/skeletons";
 import CardWrapper from "@/app/ui/dashboard/cards";
+import LatestDonations from "@/app/ui/dashboard/latest-donations";
 
 export default async function Page() {
     return (
@@ -20,7 +20,7 @@ export default async function Page() {
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
                 {/* <RevenueChart revenue={data[0]} /> */}
                 <Suspense fallback={<LatestInvoicesSkeleton />}>
-                    {/* <LatestInvoices /> */}
+                    <LatestDonations />
                 </Suspense>
                 <Suspense fallback={<LatestInvoicesSkeleton />}>
                     {/* <LatestInvoices /> */}
