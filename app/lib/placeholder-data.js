@@ -735,30 +735,35 @@ const reliefs = [
         name: "Cholo Syllhet Jaibo",
         location: "Sylhet",
         campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
+        timestamp: "2021-05-01 12:00:00",
     },
     {
         id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
         name: "Cumilla Jabo",
         location: "Cumilla",
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        timestamp: "2021-05-02 12:00:00",
     },
     {
         id: "428a4ef6-86f1-4d53-8247-009af4359f13",
         name: "Talk Talk Barishal",
         location: "Barishal",
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
+        timestamp: "2021-05-03 12:00:00",
     },
     {
         id: "4f13ccba-e67f-481b-9bd4-2a3da7d3ab22",
         name: "Run Run Sisimpur",
         location: "Rangpur",
         campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
+        timestamp: "2021-05-04 12:00:00",
     },
     {
         id: "406d0ce9-6038-4d53-a1d5-14ba99ab7ef0",
         name: "Fun Fun Gaibandha",
         location: "Gaibandha",
         campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
+        timestamp: "2021-05-05 12:00:00",
     },
 ];
 

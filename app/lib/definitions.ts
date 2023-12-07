@@ -1,8 +1,15 @@
-export type LatestDonation = {
+export type LatestDonations = {
     id: string;
     donation_item_name: string;
     donation_item_unit: string;
     quantity: number;
     donor_name: string;
+    campaign_name: string;
+};
+
+export type LatestReliefs = {
+    id: string;
+    relief_name: string;
+    relief_location: string;
     campaign_name: string;
 };

@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
-import { LatestDonation } from "./definitions";
+import { LatestDonations, LatestReliefs } from "./definitions";
 
 export async function fetchCardData() {
     noStore();
@@ -41,7 +41,7 @@ export async function fetchLatestDonations() {
     noStore();
 
     try {
-        const data = await sql<LatestDonation>`
+        const data = await sql<LatestDonations>`
           SELECT 
               t.id,
               di.name AS donation_item_name,
@@ -64,17 +64,50 @@ export async function fetchLatestDonations() {
           LIMIT 5;
         `;
 
-        console.log("Fetching revenue data...");
+        console.log("Fetching latest donations ...");
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const latestDonations = data.rows.map((donation) => ({
             ...donation,
         }));
 
-        console.log("Data fetch completed after 2 seconds.");
+        console.log("Data fetch completed after 1 second.");
         return latestDonations;
     } catch (error) {
         console.error("Database Error:", error);
         throw new Error("Failed to fetch the latest donations.");
+    }
+}
+export async function fetchLatestReliefs() {
+    noStore();
+
+    try {
+        const data = await sql<LatestReliefs>`
+          SELECT 
+              r.id,
+              r.name AS relief_name,
+              r.location AS relief_location,
+              c.name AS campaign_name
+          FROM 
+              reliefs r
+          JOIN 
+              campaigns c ON r.campaign_id = c.id
+          ORDER BY 
+              r.timestamp DESC
+          LIMIT 5;
+        `;
+
+        console.log("Fetching reliefs data...");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const latestReliefs = data.rows.map((relief) => ({
+            ...relief,
+        }));
+
+        console.log("Data fetch completed after 1 second.");
+        return latestReliefs;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch the latest reliefs.");
     }
 }

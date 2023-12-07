@@ -198,6 +198,7 @@ async function seedReliefs(client) {
             name VARCHAR(150) NOT NULL UNIQUE,
             location VARCHAR(150) NOT NULL,
             campaign_id UUID NOT NULL,
+            timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
             FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
           );
         `;
@@ -208,8 +209,8 @@ async function seedReliefs(client) {
         const insertedReliefs = await Promise.all(
             reliefs.map(async (relief) => {
                 return client.sql`
-                    INSERT INTO reliefs (id, name, location, campaign_id)
-                    VALUES (${relief.id}, ${relief.name}, ${relief.location}, ${relief.campaign_id})
+                    INSERT INTO reliefs (id, name, location, campaign_id, timestamp)
+                    VALUES (${relief.id}, ${relief.name}, ${relief.location}, ${relief.campaign_id}, ${relief.timestamp})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })
