@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function Home() {
     return (
         <main className="flex min-h-screen flex-col p-6">
-            <div className="flex h-20 shrink-0 items-end rounded-lg bg-secondary-color-700 p-4 md:h-52">
+            <div className="flex h-20 shrink-0 items-end rounded-lg bg-gray-700 p-4 md:h-52">
                 <ReliefHubLogo />
             </div>
             <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
@@ -21,7 +21,7 @@ export default function Home() {
                     </p>
                     <Link
                         href="/login"
-                        className="flex items-center gap-5 self-start rounded-lg bg-secondary-color-700 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-secondary-color-600 md:text-base"
+                        className="flex items-center gap-5 self-start bg-gray-700 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-600 md:text-base"
                     >
                         <span>Log in</span>{" "}
                         <ArrowRightIcon className="w-5 md:w-6" />
@@ -33,7 +33,7 @@ export default function Home() {
                         src="/hero-desktop.png"
                         width={1000}
                         height={760}
-                        className="hidden md:block border-2 border-secondary-color-600  p-2"
+                        className="hidden md:block border-2 border-gray-700  p-2"
                         alt="Screenshots of the dashboard project showing desktop version"
                     />
                     <Image

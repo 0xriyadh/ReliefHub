@@ -1,8 +1,8 @@
 const Page = () => {
   return (
-    <main>
-      
-    </main>
+    <div>
+      Campaigns
+    </div>
   );
 };
 

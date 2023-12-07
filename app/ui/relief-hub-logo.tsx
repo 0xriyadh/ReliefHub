@@ -6,8 +6,8 @@ export default function ReliefHubLogo() {
         <div
             className={`${roboto.className} flex flex-row items-center leading-none text-white`}
         >
-            <RectangleGroupIcon className="h-12 w-12 rotate-[15deg]" />
-            <p className="text-[44px]">Relief Hub</p>
+            <RectangleGroupIcon className="h-24 w-24 rotate-[15deg]" />
+            {/* <p className="text-3xl">Relief Hub</p> */}
         </div>
     );
 }
