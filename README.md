@@ -51,3 +51,7 @@ BEGIN
     END LOOP;
 END $$;
 ```
+**Get the Number of Total Donations**
+```sql
+SELECT COUNT(*) FROM transactions WHERE donor_id IS NOT NULL;
+```
