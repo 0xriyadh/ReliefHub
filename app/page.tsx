@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import ReliefHubLogo from "./ui/relief-hub-logo";
-import { roboto } from "./ui/fonts";
 import Image from "next/image";
 
 export default function Home() {
@@ -15,10 +14,7 @@ export default function Home() {
                     <p className="text-xl text-gray-800 antialiased md:text-3xl md:leading-normal">
                         <strong>Welcome to Relief Hub.</strong> This is the
                         example for the{" "}
-                        <Link
-                            href="/"
-                            className="text-primary-color-600"
-                        >
+                        <Link href="/" className="text-primary-color-600">
                             Next.js Learn Course
                         </Link>
                         , brought to you by Vercel.
@@ -37,7 +33,7 @@ export default function Home() {
                         src="/hero-desktop.png"
                         width={1000}
                         height={760}
-                        className="hidden md:block"
+                        className="hidden md:block border-2 border-secondary-color-600  p-2"
                         alt="Screenshots of the dashboard project showing desktop version"
                     />
                     <Image
