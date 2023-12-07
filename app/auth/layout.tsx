@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Relief Hub: Admin Panel",
-    description: "Admin Panel for Relief Hub App",
+    title: "Relief Hub: Auth",
+    description: "Authentication for Relief Hub App",
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
