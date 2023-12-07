@@ -413,6 +413,7 @@ async function seedTransactions(client) {
             relief_id UUID,
             campaign_id UUID NOT NULL,
             donor_id UUID,
+            timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
             
             FOREIGN KEY (donation_item_id) REFERENCES donation_items(id),
             FOREIGN KEY (relief_id) REFERENCES reliefs(id),
@@ -427,8 +428,8 @@ async function seedTransactions(client) {
         const insertedTransactions = await Promise.all(
             transactions.map(async (transaction) => {
                 return client.sql`
-                    INSERT INTO transactions (id, donation_item_id, quantity, status, relief_id, campaign_id, donor_id)
-                    VALUES (${transaction.id}, ${transaction.donation_item_id}, ${transaction.quantity}, ${transaction.status}, ${transaction.relief_id}, ${transaction.campaign_id}, ${transaction.donor_id})
+                    INSERT INTO transactions (id, donation_item_id, quantity, status, relief_id, campaign_id, donor_id, timestamp)
+                    VALUES (${transaction.id}, ${transaction.donation_item_id}, ${transaction.quantity}, ${transaction.status}, ${transaction.relief_id}, ${transaction.campaign_id}, ${transaction.donor_id}, ${transaction.timestamp})
                     ON CONFLICT (id) DO NOTHING;
                 `;
             })

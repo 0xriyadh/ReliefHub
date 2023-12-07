@@ -811,6 +811,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
         donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+        timestamp: "2021-05-01 12:00:00", 
     },
     {
         id: "22233872-8082-4e19-80b1-7325edfcbcbc",
@@ -820,6 +821,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
         donor_id: "71718621-4643-4217-a851-85d516e7455f",
+        timestamp: "2021-05-02 12:00:00",
     },
     {
         id: "b3204315-9b29-4b68-8626-0c42b52ad8d7",
@@ -829,6 +831,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
         donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+        timestamp: "2021-05-03 12:00:00",
     },
     {
         id: "519cd5f5-0ef6-468c-92d9-49f12872570c",
@@ -838,6 +841,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
         donor_id: "71718621-4643-4217-a851-85d516e7455f",
+        timestamp: "2021-05-04 12:00:00",
     },
     {
         id: "cbaaca28-8e0f-482f-b573-cedd57702ab7",
@@ -847,6 +851,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
         donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+        timestamp: "2021-05-05 12:00:00",
     },
     {
         id: "0b6d9690-f827-45ab-bed0-f15e413596b0",
@@ -856,6 +861,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
         donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+        timestamp: "2021-05-06 12:00:00",
     },
     {
         id: "0e16b604-1235-4b42-a2ab-84d763dc7273",
@@ -865,6 +871,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
         donor_id: "71718621-4643-4217-a851-85d516e7455f",
+        timestamp: "2021-05-07 12:00:00",
     },
     {
         id: "cc38d8df-84d0-4f26-9d7f-dd2371cf2b21",
@@ -874,6 +881,7 @@ const transactions = [
         relief_id: null,
         campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
         donor_id: "7932388d-dbdd-4408-b2cd-222471eb1846",
+        timestamp: "2021-05-08 12:00:00",
     },
 
     // 3 reliefs
@@ -885,6 +893,7 @@ const transactions = [
         relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
         campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
         donor_id: null,
+        timestamp: "2021-05-09 12:00:00",
     },
     {
         id: "f073a4c6-cbac-4e35-a8f2-5e1c87acc744",
@@ -894,6 +903,7 @@ const transactions = [
         relief_id: "e67f25ae-0aeb-4f0d-a517-3f729c90819e",
         campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
         donor_id: null,
+        timestamp: "2021-05-10 12:00:00",
     },
     {
         id: "aca0ec30-7273-4ddd-8e69-dcc2fa56bed6",
@@ -903,6 +913,7 @@ const transactions = [
         relief_id: "cea7d7a5-8629-4867-8404-2fda94e2c45e",
         campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
         donor_id: null,
+        timestamp: "2021-05-11 12:00:00",
     },
 ];
 
