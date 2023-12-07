@@ -12,6 +12,7 @@ import { Button } from "@/app/ui/button";
 // import { createInvoice } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import { ModeratorsField } from "@/app/lib/definitions";
+import { createCampaign } from "@/app/lib/actions";
 
 export default function CreateForm({
     moderators,
@@ -23,7 +24,7 @@ export default function CreateForm({
     // const [state, dispatch] = useFormState(createInvoice, initialState);
     return (
         // <form action={dispatch}>
-        <form>
+        <form action={createCampaign}>
             <div className="bg-gray-50 p-4 md:p-6">
                 {/* Select Campaign Leader */}
                 <div className="mb-4">
@@ -83,7 +84,7 @@ export default function CreateForm({
                         <div className="relative">
                             <input
                                 id="campaign-name"
-                                name="campaign-name"
+                                name="campaignName"
                                 type="text"
                                 step="0.01"
                                 placeholder="Give your campaign a unique name"
