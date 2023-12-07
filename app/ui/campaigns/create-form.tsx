@@ -2,15 +2,10 @@
 
 import Link from "next/link";
 import {
-    CheckIcon,
-    ClockIcon,
-    CurrencyDollarIcon,
     UserCircleIcon,
     MegaphoneIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
-// import { createInvoice } from "@/app/lib/actions";
-import { useFormState } from "react-dom";
 import { ModeratorsField } from "@/app/lib/definitions";
 import { createCampaign } from "@/app/lib/actions";
 
@@ -19,11 +14,7 @@ export default function CreateForm({
 }: {
     moderators: ModeratorsField[];
 }) {
-    const initialState = { message: null, errors: {} };
-    // const [state, formAction] = useFormState(fn, initialState);
-    // const [state, dispatch] = useFormState(createInvoice, initialState);
     return (
-        // <form action={dispatch}>
         <form action={createCampaign}>
             <div className="bg-gray-50 p-4 md:p-6">
                 {/* Select Campaign Leader */}
@@ -54,23 +45,6 @@ export default function CreateForm({
                         </select>
                         <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                     </div>
-                    {/* <div
-                        id="leader-error"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    >
-                        {state.errors?.leaderId &&
-                            state.errors.leaderId.map((error: string) => (
-                                <p
-                                    className="mt-2 text-sm text-red-500"
-                                    key={error}
-                                >
-                                    {error.toLowerCase() === "required"
-                                        ? "Please select a customer"
-                                        : error}
-                                </p>
-                            ))}
-                    </div> */}
                 </div>
 
                 {/* Name of the Campaign */}
@@ -96,43 +70,7 @@ export default function CreateForm({
                             <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
                     </div>
-                    {/* <div
-                        id="campaign-name-error"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    >
-                        {state.errors?.amount &&
-                            state.errors.amount.map((error: string) => (
-                                <p
-                                    className="mt-2 text-sm text-red-500"
-                                    key={error}
-                                >
-                                    {error}
-                                </p>
-                            ))}
-                    </div> */}
                 </div>
-
-                {/* <div id="customer-error" aria-live="polite" aria-atomic="true">
-                    {state.errors?.status &&
-                        state.errors.status.map((error: string) => (
-                            <p
-                                className="mt-2 text-sm text-red-500"
-                                key={error}
-                            >
-                                {error.toLocaleLowerCase() === "required"
-                                    ? "Please select a status"
-                                    : error}
-                            </p>
-                        ))}
-                </div>
-                <div>
-                    {state.errors && (
-                        <p className="mt-2 text-sm text-red-500">
-                            {state.message}
-                        </p>
-                    )}
-                </div> */}
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Link
