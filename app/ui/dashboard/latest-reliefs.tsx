@@ -1,17 +1,17 @@
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { fetchLatestDonations } from "@/app/lib/data";
-export default async function LatestDonations() {
-    const latestDonations = await fetchLatestDonations();
+import { fetchLatestReliefs } from "@/app/lib/data";
+export default async function LatestReliefs() {
+    const latestReliefs = await fetchLatestReliefs();
     return (
         <div className="flex w-full flex-col md:col-span-4">
-            <h2 className="mb-4 text-xl md:text-2xl">Latest Donations</h2>
+            <h2 className="mb-4 text-xl md:text-2xl">Latest Reliefs</h2>
             <div className="flex grow flex-col justify-between bg-gray-50 p-4">
                 <div className="bg-white px-6">
-                    {latestDonations.map((donation, i) => {
+                    {latestReliefs.map((relief, i) => {
                         return (
                             <div
-                                key={donation.id}
+                                key={relief.id}
                                 className={clsx(
                                     "flex flex-row items-center justify-between py-4",
                                     {
@@ -22,22 +22,16 @@ export default async function LatestDonations() {
                                 <div className="flex items-center">
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold md:text-base">
-                                            {donation.donor_name}
+                                            {relief.relief_name}
                                         </p>
                                         <p className="hidden text-sm text-gray-500 sm:block">
-                                            {donation.campaign_name}
+                                            {relief.campaign_name}
                                         </p>
                                     </div>
                                 </div>
-                                <p className="truncate text-sm font-medium md:text-base">
-                                    {donation.quantity.toLocaleString()}{" "}
-                                    {donation.donation_item_unit}{" "}
-                                    {donation.donation_item_name !==
-                                        "Money" && (
-                                        <span>
-                                            of {donation.donation_item_name}
-                                        </span>
-                                    )}
+                                <p className="truncate text-sm font-medium md:text-base flex items-center space-x-2">
+                                    <span>{relief.relief_location}</span>{" "}
+                                    <MapPinIcon className="h-4 w-4 text-primary-color-600" />
                                 </p>
                             </div>
                         );

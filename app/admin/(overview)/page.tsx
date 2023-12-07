@@ -7,6 +7,7 @@ import {
 } from "@/app/ui/skeletons";
 import CardWrapper from "@/app/ui/dashboard/cards";
 import LatestDonations from "@/app/ui/dashboard/latest-donations";
+import LatestReliefs from "@/app/ui/dashboard/latest-reliefs";
 
 export default async function Page() {
     return (
@@ -23,7 +24,7 @@ export default async function Page() {
                     <LatestDonations />
                 </Suspense>
                 <Suspense fallback={<LatestInvoicesSkeleton />}>
-                    {/* <LatestInvoices /> */}
+                    <LatestReliefs />
                 </Suspense>
             </div>
         </main>
