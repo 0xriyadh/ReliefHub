@@ -41,6 +41,7 @@ export default function CreateForm({
                             className="peer block w-full cursor-pointer border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             defaultValue=""
                             aria-describedby="leader-error"
+                            required
                         >
                             <option value="" disabled>
                                 Choose the Campaign Leader
@@ -90,6 +91,7 @@ export default function CreateForm({
                                 placeholder="Give your campaign a unique name"
                                 className="peer block w-full border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="campaign-name-error"
+                                required
                             />
                             <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
