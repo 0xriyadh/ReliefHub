@@ -25,7 +25,7 @@ async function Layout({
                     { label: "Campaigns", href: `/admin/campaigns` },
                     {
                         label: `${campaign?.name}`,
-                        href: `/`,
+                        href: `/admin/campaigns/${id}`,
                         active: true,
                     },
                 ]}
