@@ -101,7 +101,9 @@ export async function createCampaignStock(formData: FormData) {
     try {
         await sql`
       INSERT INTO campaign_stocks (Campaign_id, Donation_item_id, Quantity)
-      VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${quantity}`});
+      VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${Number(
+            quantity
+        )}`});
     `;
     } catch (error) {
         // If a database error occurs, return a more specific error
@@ -115,7 +117,10 @@ export async function createCampaignStock(formData: FormData) {
     redirect(`/admin/campaigns/${campaignId}`);
 }
 
-export async function deleteCampaignStock(campaignId: string, donationItemId: string) {
+export async function deleteCampaignStock(
+    campaignId: string,
+    donationItemId: string
+) {
     // Delete data from the database
     try {
         try {
