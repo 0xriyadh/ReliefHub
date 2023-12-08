@@ -12,9 +12,9 @@ export async function createCampaign(formData: FormData) {
     // Insert data into the database
     try {
         await sql`
-      INSERT INTO campaigns (name, campaign_leader_id)
-      VALUES (${`${campaignName}`}, ${`${leaderId}`});
-    `;
+            INSERT INTO campaigns (name, campaign_leader_id)
+            VALUES (${`${campaignName}`}, ${`${leaderId}`});
+        `;
     } catch (error) {
         // If a database error occurs, return a more specific error
         return {
@@ -35,13 +35,13 @@ export async function updateCampaign(id: string, formData: FormData) {
     // Insert data into the database
     try {
         await sql`
-      UPDATE 
-        campaigns
-      SET
-        name = ${`${campaignName}`}, campaign_leader_id = ${`${leaderId}`}, status = ${`${status}`}
-      WHERE
-        id = ${id};
-    `;
+            UPDATE 
+                campaigns
+            SET
+                name = ${`${campaignName}`}, campaign_leader_id = ${`${leaderId}`}, status = ${`${status}`}
+            WHERE
+                id = ${id};
+        `;
     } catch (error) {
         // If a database error occurs, return a more specific error
         return {
@@ -99,12 +99,15 @@ export async function createCampaignStock(formData: FormData) {
 
     // Insert data into the database
     try {
+        if (Number(quantity) < 0) { 
+            throw new Error("Quantity must be a positive number.");
+        }
         await sql`
-      INSERT INTO campaign_stocks (Campaign_id, Donation_item_id, Quantity)
-      VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${Number(
+            INSERT INTO campaign_stocks (Campaign_id, Donation_item_id, Quantity)
+            VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${Number(
             quantity
         )}`});
-    `;
+        `;
     } catch (error) {
         // If a database error occurs, return a more specific error
         return {
@@ -142,6 +145,7 @@ export async function deleteCampaignStock(
             }
         }
         console.log("Campaign Stock Item Deleted.");
+
         revalidatePath(`/admin/campaigns/${campaignId}`);
         return { success: true, message: "Campaign Stock Item Deleted." };
     } catch (error: any) {

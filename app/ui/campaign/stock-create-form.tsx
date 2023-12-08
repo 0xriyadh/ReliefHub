@@ -99,12 +99,12 @@ export default function CreateStockForm({
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Link
-                    href="/dashboard/invoices"
+                    href={`/admin/campaigns/${campaign_id}`}
                     className="flex h-10 items-center bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                 >
                     Cancel
                 </Link>
-                <Button type="submit">Create Campaign</Button>
+                <Button type="submit">Create Stock Item</Button>
             </div>
         </form>
     );
