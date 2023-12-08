@@ -30,7 +30,7 @@ export async function fetchCardData() {
         const numberOfCampaigns = Number(data[2].rows[0].count ?? "0");
         const numberOfDonations = Number(data[3].rows[0].count ?? "0");
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         return {
             numberOfModerators,
@@ -72,7 +72,7 @@ export async function fetchLatestDonations() {
         `;
 
         console.log("Fetching latest donations ...");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         const latestDonations = data.rows;
 
@@ -104,7 +104,7 @@ export async function fetchLatestReliefs() {
         `;
 
         console.log("Fetching reliefs data...");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         const latestReliefs = data.rows;
 
@@ -146,7 +146,7 @@ export async function fetchFilteredCampaigns(
         ORDER BY 
             c.timestamp DESC
         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};`;
-        // await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         console.log("Fetching filtered campaigns completed after 1 sec. ");
         return campaigns.rows;
     } catch (error) {
@@ -168,7 +168,7 @@ export async function fetchCampaignsPages(query: string) {
             u.name ILIKE ${`%${query}%`} OR
             c.name ILIKE ${`%${query}%`} OR
             c.status::text ILIKE ${`%${query}%`};`;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const totalPages = Math.ceil(
             Number(count.rows[0].count) / ITEMS_PER_PAGE
         );
@@ -191,7 +191,7 @@ export async function fetchCampaignById(id: string) {
         WHERE
             id = ${id};
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const campaigns = data.rows[0];
         return campaigns;
     } catch (err) {
@@ -215,7 +215,7 @@ export async function fetchModerators() {
         ORDER BY
             name ASC;
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const moderators = data.rows;
         return moderators;
     } catch (err) {
@@ -234,6 +234,7 @@ export async function fetchTeamsWithCampaignId(id: string) {
             WHERE
                 campaign_id = ${id};
         `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
         return teams.rows;
     } catch (err: any) {
         console.error("Database Error:", err);
@@ -253,11 +254,33 @@ export async function fetchTeamsCountWithCampaignId(id: string) {
             WHERE
                 campaign_id = ${id};
         `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
         return Number(count.rows[0].count);
     } catch (err: any) {
         console.error("Database Error:", err);
         throw new Error(
             `Failed to fetch teams count with campaign id ${id}. Error: ${err.message}`
         );
+    }
+}
+
+export async function fetchUserById(id: string) {
+    noStore();
+
+    try {
+        const data = await sql`
+        SELECT
+            *
+        FROM 
+            users
+        WHERE
+            id = ${id};
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const user = data.rows[0];
+        return user;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch user with ID.");
     }
 }
