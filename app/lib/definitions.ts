@@ -24,9 +24,10 @@ export type CampaignsTable = {
 };
 
 export type CampaignForm = {
+    id: string;
     name: string;
     campaign_leader_id: string;
-    status: 'active' | 'archived';
+    status: "active" | "archived";
 };
 
 export type ModeratorsField = {

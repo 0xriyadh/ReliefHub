@@ -1,4 +1,6 @@
 // import { deleteInvoice } from '@/app/lib/actions';
+import { deleteCampaign } from "@/app/lib/actions";
+import { fetchModerators, fetchTeamsWithCampaignId } from "@/app/lib/data";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
@@ -14,24 +16,31 @@ export function CreateCampaign() {
     );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateCampaign({ id }: { id: string }) {
     return (
         <Link
             href={`/admin/campaigns/${id}/edit`}
-            className="border p-2 hover:bg-gray-100"
+            className="p-2 hover:text-primary-color-600"
         >
             <PencilIcon className="w-5" />
         </Link>
     );
 }
 
-export function DeleteInvoice({ id }: { id: string }) {
-    // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+export async function DeleteCampaign({ id }: { id: string }) {
+    const deleteCampaignWithId = deleteCampaign.bind(null, id);
+    const teams = await fetchTeamsWithCampaignId(id);
     return (
         <>
-            {/* <form action={deleteInvoiceWithId}> */}
-            <form>
-                <button className="border p-2 hover:bg-gray-100">
+            <form action={deleteCampaignWithId}>
+                <button
+                    className={`p-2 text-red-500 hover:text-red-200 ${
+                        teams.length > 0
+                            ? "cursor-not-allowed text-red-200"
+                            : ""
+                    }`}
+                    disabled={teams.length > 0}
+                >
                     <span className="sr-only">Delete</span>
                     <TrashIcon className="w-5" />
                 </button>

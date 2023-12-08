@@ -1,18 +1,17 @@
-// import Form from "@/app/ui/invoices/edit-form";
-// import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
-// import { fetchCustomers, fetchInvoiceById } from "@/app/lib/data";
+import { fetchCampaignById, fetchModerators } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/campaigns/breadcrumbs";
+import EditForm from "@/app/ui/campaigns/edit-form";
 import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    // const [invoice, customers] = await Promise.all([
-    //     fetchInvoiceById(id),
-    //     fetchCustomers(),
-    // ]);
-    // if (!invoice) {
-    //     return notFound();
-    // }
+    const [campaign, moderators] = await Promise.all([
+        fetchCampaignById(id),
+        fetchModerators(),
+    ]);
+    if (!campaign) {
+        return notFound();
+    }
     return (
         <main>
             <Breadcrumbs
@@ -25,8 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            Hello, {id}
-            {/* <Form invoice={invoice} customers={customers} /> */}
+            <EditForm campaign={campaign} moderators={moderators} />
         </main>
     );
 }

@@ -172,12 +172,13 @@ export async function fetchCampaignsPages(query: string) {
     }
 }
 
-export async function fetchCampaign(id: string) {
+export async function fetchCampaignById(id: string) {
   noStore();
 
-  try {
-    const data = await sql<CampaignForm>`
+    try {
+      const data = await sql<CampaignForm>`
         SELECT
+            id,
             name, 
             campaign_leader_id,
             status
@@ -187,11 +188,11 @@ export async function fetchCampaign(id: string) {
             id = ${id};
     `;
 
-    const campaigns = data.rows;
+    const campaigns = data.rows[0];
     return campaigns;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error("Failed to fetch all campaigns.");
+    throw new Error("Failed to fetch campaign with ID.");
   }
 }
 
@@ -216,5 +217,22 @@ export async function fetchModerators() {
     } catch (err) {
         console.error("Database Error:", err);
         throw new Error("Failed to fetch all moderators.");
+    }
+}
+
+export async function fetchTeamsWithCampaignId(id: string) {
+    noStore();
+    
+    try {
+        const teams = await sql`
+            SELECT name FROM 
+                teams
+            WHERE
+                campaign_id = ${id};
+        `;
+        return teams.rows;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(`Failed to fetch teams with campaign id ${id}. Error: ${err.message}`);
     }
 }
