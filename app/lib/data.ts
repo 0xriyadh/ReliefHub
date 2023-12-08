@@ -3,9 +3,11 @@ import { unstable_noStore as noStore } from "next/cache";
 import {
     CampaignForm,
     CampaignsTable,
+    DonationItemForm,
     LatestDonations,
     LatestReliefs,
     ModeratorsField,
+    StocksTable,
     TeamField,
 } from "./definitions";
 
@@ -30,7 +32,7 @@ export async function fetchCardData() {
         const numberOfCampaigns = Number(data[2].rows[0].count ?? "0");
         const numberOfDonations = Number(data[3].rows[0].count ?? "0");
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         return {
             numberOfModerators,
@@ -72,7 +74,7 @@ export async function fetchLatestDonations() {
         `;
 
         console.log("Fetching latest donations ...");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         const latestDonations = data.rows;
 
@@ -104,7 +106,7 @@ export async function fetchLatestReliefs() {
         `;
 
         console.log("Fetching reliefs data...");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         const latestReliefs = data.rows;
 
@@ -146,7 +148,7 @@ export async function fetchFilteredCampaigns(
         ORDER BY 
             c.timestamp DESC
         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};`;
-        // await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         console.log("Fetching filtered campaigns completed after 1 sec. ");
         return campaigns.rows;
     } catch (error) {
@@ -168,7 +170,7 @@ export async function fetchCampaignsPages(query: string) {
             u.name ILIKE ${`%${query}%`} OR
             c.name ILIKE ${`%${query}%`} OR
             c.status::text ILIKE ${`%${query}%`};`;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const totalPages = Math.ceil(
             Number(count.rows[0].count) / ITEMS_PER_PAGE
         );
@@ -191,7 +193,7 @@ export async function fetchCampaignById(id: string) {
         WHERE
             id = ${id};
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const campaigns = data.rows[0];
         return campaigns;
     } catch (err) {
@@ -215,7 +217,7 @@ export async function fetchModerators() {
         ORDER BY
             name ASC;
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const moderators = data.rows;
         return moderators;
     } catch (err) {
@@ -234,6 +236,7 @@ export async function fetchTeamsWithCampaignId(id: string) {
             WHERE
                 campaign_id = ${id};
         `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
         return teams.rows;
     } catch (err: any) {
         console.error("Database Error:", err);
@@ -253,11 +256,164 @@ export async function fetchTeamsCountWithCampaignId(id: string) {
             WHERE
                 campaign_id = ${id};
         `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
         return Number(count.rows[0].count);
     } catch (err: any) {
         console.error("Database Error:", err);
         throw new Error(
             `Failed to fetch teams count with campaign id ${id}. Error: ${err.message}`
         );
+    }
+}
+
+export async function fetchIfAnyTeamWithCampaignId(id: string) {
+    noStore();
+
+    try {
+        const result = await sql`
+            SELECT EXISTS (
+                SELECT 1 FROM teams WHERE campaign_id = ${id}
+            ) AS "exists";
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return result.rows[0].exists;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(
+            `Failed to check if team exists with campaign id ${id}. Error: ${err.message}`
+        );
+    }
+}
+
+export async function fetchIfAnyStockItemWithCampaignId(id: string) {
+    noStore();
+
+    try {
+        const result = await sql`
+            SELECT EXISTS (
+                SELECT 1 FROM campaign_stocks WHERE campaign_id = ${id}
+            ) AS "exists";
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return result.rows[0].exists;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(
+            `Failed to check if stock item exists with campaign id ${id}. Error: ${err.message}`
+        );
+    }
+}
+
+export async function fetchUserById(id: string) {
+    noStore();
+
+    try {
+        const data = await sql`
+        SELECT
+            *
+        FROM 
+            users
+        WHERE
+            id = ${id};
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const user = data.rows[0];
+        return user;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch user with ID.");
+    }
+}
+
+export async function fetchFilteredStocks(
+    campaign_id: string,
+    currentPage: number
+) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    try {
+        console.log("Fetching filtered stocks ...");
+        const campaigns = await sql<StocksTable>`
+            SELECT 
+                campaigns.id AS campaign_id,
+                donation_items.id AS donation_item_id,
+                donation_items.name AS item_name, 
+                donation_items.unit AS item_unit, 
+                campaign_stocks.quantity AS item_quantity
+            FROM 
+                campaign_stocks
+            JOIN 
+                campaigns ON campaign_stocks.campaign_id = campaigns.id
+            JOIN 
+                donation_items ON campaign_stocks.donation_item_id = donation_items.id
+            WHERE
+                campaigns.id=${campaign_id}
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log("Fetching filtered stocks completed after 1 sec. ");
+        return campaigns.rows;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch filtered stocks.");
+    }
+}
+
+export async function fetchCampaignStocksPages(id: string) {
+    noStore();
+
+    try {
+        const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                campaign_stocks
+            JOIN 
+                campaigns ON campaign_stocks.campaign_id = campaigns.id
+            JOIN 
+                donation_items ON campaign_stocks.donation_item_id = donation_items.id
+            WHERE
+                campaigns.id=${id};
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const totalPages = Math.ceil(
+            Number(count.rows[0].count) / ITEMS_PER_PAGE
+        );
+        return totalPages;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch total number of campaigns.");
+    }
+}
+
+export async function fetchDonationItems(campaignId: string) {
+    noStore();
+
+    try {
+        const data = await sql`
+        SELECT 
+            donation_items.id,
+            donation_items.name,
+            donation_items.unit
+        FROM 
+            donation_items
+        WHERE 
+            NOT EXISTS (
+                SELECT 1 
+                FROM campaign_stocks 
+                WHERE 
+                    campaign_stocks.donation_item_id = donation_items.id 
+                    AND campaign_stocks.campaign_id = ${campaignId}
+            )
+        ORDER BY
+            donation_items.name ASC;
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const donationItems = data.rows as DonationItemForm[];
+        return donationItems;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch donation items.");
     }
 }

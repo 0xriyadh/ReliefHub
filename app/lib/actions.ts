@@ -68,8 +68,10 @@ export async function deleteCampaign(id: string) {
             console.log("SQL deletion statement executed.");
         } catch (sqlError: any) {
             console.error("Error executing SQL deletion statement:", sqlError);
-            if (sqlError.code === '23503') {
-                throw new Error('This campaign is still referenced by a team and cannot be deleted.');
+            if (sqlError.code === "23503") {
+                throw new Error(
+                    "This campaign is still referenced by a team and cannot be deleted."
+                );
             } else {
                 throw sqlError;
             }
@@ -77,6 +79,71 @@ export async function deleteCampaign(id: string) {
         console.log("Campaign Deleted.");
         revalidatePath("/admin/campaigns");
         return { success: true, message: "Campaign Deleted." };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.message,
+            error: error.toString(),
+        };
+    }
+}
+
+export async function createCampaignStock(formData: FormData) {
+    // Prepare data for insertion into the database
+    console.log(
+        "createCampaignStock function called.",
+        Object.fromEntries(formData.entries())
+    );
+    const { campaignId, donationItemId, quantity } =
+        Object.fromEntries(formData.entries()) || {};
+
+    // Insert data into the database
+    try {
+        await sql`
+      INSERT INTO campaign_stocks (Campaign_id, Donation_item_id, Quantity)
+      VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${Number(
+            quantity
+        )}`});
+    `;
+    } catch (error) {
+        // If a database error occurs, return a more specific error
+        return {
+            message: "Database Error: Failed to Create Campaign Stock.",
+        };
+    }
+
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath(`/admin/campaigns/${campaignId}`);
+    redirect(`/admin/campaigns/${campaignId}`);
+}
+
+export async function deleteCampaignStock(
+    campaignId: string,
+    donationItemId: string
+) {
+    // Delete data from the database
+    try {
+        try {
+            await sql`
+                DELETE FROM 
+                campaign_stocks
+                WHERE
+                campaign_id = ${campaignId} AND donation_item_id = ${donationItemId};
+            `;
+            console.log("SQL deletion statement executed.");
+        } catch (sqlError: any) {
+            console.error("Error executing SQL deletion statement:", sqlError);
+            if (sqlError.code === "23503") {
+                throw new Error(
+                    "This campaign is still referenced by a team and cannot be deleted."
+                );
+            } else {
+                throw sqlError;
+            }
+        }
+        console.log("Campaign Stock Item Deleted.");
+        revalidatePath(`/admin/campaigns/${campaignId}`);
+        return { success: true, message: "Campaign Stock Item Deleted." };
     } catch (error: any) {
         return {
             success: false,

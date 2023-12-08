@@ -162,7 +162,7 @@ async function seedTeams(client) {
     } catch (error) {
         console.error("Error seeding teams:", error);
         throw error;
-    } 
+    }
 }
 
 async function seedVolunteersWorksOrWorkedIn(client) {
@@ -308,8 +308,8 @@ async function seedCampaignStocks(client) {
         const insertedCampaignStocks = await Promise.all(
             campaignStocks.map(async (stock) => {
                 return client.sql`
-                    INSERT INTO campaign_stocks (campaign_id, donation_item_id)
-                    VALUES (${stock.campaign_id}, ${stock.donation_item_id})
+                    INSERT INTO campaign_stocks (campaign_id, donation_item_id, quantity)
+                    VALUES (${stock.campaign_id}, ${stock.donation_item_id}, ${stock.quantity})
                     ON CONFLICT (campaign_id, donation_item_id) DO NOTHING;
                 `;
             })
@@ -492,3 +492,11 @@ main().catch((err) => {
         err
     );
 });
+
+/* 
+SELECT donation_items.name AS item, donation_items.unit, campaign_stocks.quantity
+FROM donation_items
+JOIN campaign_stocks ON donation_items.campaign_stock_id = campaign_stocks.id
+JOIN campaign ON campaign_stocks.campaign_id = campaign.id; 
+
+*/
