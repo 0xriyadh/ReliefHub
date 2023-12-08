@@ -4,7 +4,7 @@ import Table from "@/app/ui/campaigns/table";
 import { CreateCampaign } from "@/app/ui/campaigns/buttons";
 import { TableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
-import { fetchFilteredCampaigns, fetchCampaignsPages } from "@/app/lib/data";
+import { fetchCampaignsPages } from "@/app/lib/data";
 
 export default async function Page({
     searchParams,
@@ -21,7 +21,6 @@ export default async function Page({
 
     return (
         <div className="w-full">
-            <p>Campaigns main page</p>
             <div className="flex w-full items-center justify-between">
                 <h1 className="text-2xl">Campaigns</h1>
             </div>

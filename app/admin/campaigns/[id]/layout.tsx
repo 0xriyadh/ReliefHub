@@ -24,8 +24,8 @@ async function Layout({
                 breadcrumbs={[
                     { label: "Campaigns", href: `/admin/campaigns` },
                     {
-                        label: `${campaign.name}`,
-                        href: `/admin/campaigns/${id}/edit`,
+                        label: `${campaign?.name}`,
+                        href: `/admin/campaigns/${id}`,
                         active: true,
                     },
                 ]}
@@ -37,7 +37,7 @@ async function Layout({
                 </p> */}
                 <p className="text-lg">
                     <span className="font-bold">Status: </span>{" "}
-                    {campaign.status == "active" ? "Active ✅" : "Archived ❌"}
+                    {campaign?.status == "active" ? "Active ✅" : "Archived ❌"}
                 </p>
             </div>
             <div className="mt-8">
