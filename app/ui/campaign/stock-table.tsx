@@ -62,7 +62,7 @@ export default async function StocksTable({
                                 >
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex items-center gap-3">
-                                            <p className="hover:text-primary-color-600">
+                                            <p>
                                                 {stock.item_name}
                                             </p>
                                         </div>
