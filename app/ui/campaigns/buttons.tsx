@@ -34,10 +34,10 @@ export async function DeleteCampaign({ id }: { id: string }) {
         <>
             <form action={deleteCampaignWithId}>
                 <button
-                    className={`p-2 text-red-500 hover:text-red-200 ${
+                    className={`p-2 ${
                         teams.length > 0
-                            ? "cursor-not-allowed text-red-200"
-                            : ""
+                            ? "cursor-not-allowed text-gray-200"
+                            : "text-red-500 hover:text-red-200"
                     }`}
                     disabled={teams.length > 0}
                 >
