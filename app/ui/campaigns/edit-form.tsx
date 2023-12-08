@@ -8,16 +8,19 @@ import {
     CheckIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
-import { ModeratorsField } from "@/app/lib/definitions";
-import { createCampaign } from "@/app/lib/actions";
+import { CampaignForm, ModeratorsField } from "@/app/lib/definitions";
+import { updateCampaign } from "@/app/lib/actions";
 
 export default function EditForm({
+    campaign,
     moderators,
 }: {
+    campaign: CampaignForm;
     moderators: ModeratorsField[];
-}) {
+    }) {
+    const updateCampaignWithId = updateCampaign.bind(null, campaign.id);
     return (
-        <form action={createCampaign}>
+        <form action={updateCampaignWithId}>
             <div className="bg-gray-50 p-4 md:p-6">
                 {/* Select Campaign Leader */}
                 <div className="mb-4">
@@ -32,8 +35,8 @@ export default function EditForm({
                             id="leader"
                             name="leaderId"
                             className="peer block w-full cursor-pointer border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                            defaultValue=""
                             aria-describedby="leader-error"
+                            defaultValue={campaign.campaign_leader_id}
                             required
                         >
                             <option value="" disabled>
@@ -67,6 +70,7 @@ export default function EditForm({
                                 placeholder="Give your campaign a unique name"
                                 className="peer block w-full border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="campaign-name-error"
+                                defaultValue={campaign.name}
                                 required
                             />
                             <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -83,33 +87,40 @@ export default function EditForm({
                         <div className="flex gap-4">
                             <div className="flex items-center">
                                 <input
-                                    id="pending"
+                                    id="archived"
                                     name="status"
                                     type="radio"
-                                    value="pending"
+                                    value="archived"
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                     aria-describedby="status-error"
+                                    defaultChecked={
+                                        campaign.status === "archived"
+                                    }
                                 />
                                 <label
-                                    htmlFor="pending"
-                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                                    htmlFor="archived"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                                 >
-                                    Pending <ClockIcon className="h-4 w-4" />
+                                    Archived <ClockIcon className="h-4 w-4" />
                                 </label>
                             </div>
                             <div className="flex items-center">
                                 <input
-                                    id="paid"
+                                    id="active"
                                     name="status"
                                     type="radio"
-                                    value="paid"
+                                    value="active"
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                                    aria-describedby="status-error"
+                                    defaultChecked={
+                                        campaign.status === "active"
+                                    }
                                 />
                                 <label
-                                    htmlFor="paid"
-                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                                    htmlFor="active"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                                 >
-                                    Paid <CheckIcon className="h-4 w-4" />
+                                    Active <CheckIcon className="h-4 w-4" />
                                 </label>
                             </div>
                         </div>
@@ -123,7 +134,7 @@ export default function EditForm({
                 >
                     Cancel
                 </Link>
-                <Button type="submit">Create Invoice</Button>
+                <Button type="submit">Update Campaign</Button>
             </div>
         </form>
     );
