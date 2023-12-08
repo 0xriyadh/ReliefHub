@@ -162,7 +162,7 @@ async function seedTeams(client) {
     } catch (error) {
         console.error("Error seeding teams:", error);
         throw error;
-    }
+    } 
 }
 
 async function seedVolunteersWorksOrWorkedIn(client) {

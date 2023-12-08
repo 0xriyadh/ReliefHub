@@ -219,3 +219,20 @@ export async function fetchModerators() {
         throw new Error("Failed to fetch all moderators.");
     }
 }
+
+export async function fetchTeamsWithCampaignId(id: string) {
+    noStore();
+    
+    try {
+        const teams = await sql`
+            SELECT name FROM 
+                teams
+            WHERE
+                campaign_id = ${id};
+        `;
+        return teams.rows;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(`Failed to fetch teams with campaign id ${id}. Error: ${err.message}`);
+    }
+}
