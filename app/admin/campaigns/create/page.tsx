@@ -1,5 +1,3 @@
-// import Form from "@/app/ui/invoices/create-form";
-// import { fetchCustomers } from "@/app/lib/data";
 import { fetchModerators } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/campaigns/breadcrumbs";
 import CreateForm from "@/app/ui/campaigns/create-form";

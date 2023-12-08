@@ -79,14 +79,14 @@ export default async function StocksTable({
                                     </td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end items-center gap-3">
-                                            <UpdateStockItem
+                                            {/* <UpdateStockItem
                                                 donationId={
                                                     stock.donation_item_id
                                                 }
                                                 campaignId={stock.campaign_id}
-                                            />
+                                            /> */}
                                             <DeleteStockItem
-                                                donationId={
+                                                donationItemId={
                                                     stock.donation_item_id
                                                 }
                                                 campaignId={stock.campaign_id}

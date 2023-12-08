@@ -1,5 +1,5 @@
 // import { deleteInvoice } from '@/app/lib/actions';
-import { deleteCampaign } from "@/app/lib/actions";
+import { deleteCampaign, deleteCampaignStock } from "@/app/lib/actions";
 import {
     fetchTeamsCountWithCampaignId,
     fetchTeamsWithCampaignId,
@@ -38,25 +38,20 @@ export function UpdateStockItem({
 
 export async function DeleteStockItem({
     campaignId,
-    donationId,
+    donationItemId,
 }: {
     campaignId: string;
-    donationId: string;
+    donationItemId: string;
 }) {
-    // const deleteCampaignWithId = deleteCampaign.bind(null, id);
-    // const teamsCount = await fetchTeamsCountWithCampaignId(id);
+    const deleteCampaignStockWithCampaignIdItemId = deleteCampaignStock.bind(
+        null,
+        campaignId,
+        donationItemId
+    );
     return (
         <>
-            {/* <form action={deleteCampaignWithId}> */}
-            <form>
-                <button
-                // className={`p-2 ${
-                //     teamsCount > 0
-                //         ? "cursor-not-allowed text-gray-200"
-                //         : "text-red-500 hover:text-red-200"
-                // }`}
-                // disabled={teamsCount > 0}
-                >
+            <form action={deleteCampaignStockWithCampaignIdItemId}>
+                <button className="p-2 text-red-500 hover:text-red-200">
                     <span className="sr-only">Delete</span>
                     <TrashIcon className="w-5" />
                 </button>

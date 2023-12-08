@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import {
     CampaignForm,
     CampaignsTable,
+    DonationItemForm,
     LatestDonations,
     LatestReliefs,
     ModeratorsField,
@@ -345,5 +346,36 @@ export async function fetchCampaignStocksPages(id: string) {
     } catch (error) {
         console.error("Database Error:", error);
         throw new Error("Failed to fetch total number of campaigns.");
+    }
+}
+
+export async function fetchDonationItems(campaignId: string) {
+    noStore();
+
+    try {
+        const data = await sql`
+        SELECT 
+            donation_items.id,
+            donation_items.name,
+            donation_items.unit
+        FROM 
+            donation_items
+        WHERE 
+            NOT EXISTS (
+                SELECT 1 
+                FROM campaign_stocks 
+                WHERE 
+                    campaign_stocks.donation_item_id = donation_items.id 
+                    AND campaign_stocks.campaign_id = ${campaignId}
+            )
+        ORDER BY
+            donation_items.name ASC;
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const donationItems = data.rows as DonationItemForm[];
+        return donationItems;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch donation items.");
     }
 }

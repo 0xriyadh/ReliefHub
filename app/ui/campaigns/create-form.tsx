@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-    UserCircleIcon,
-    MegaphoneIcon,
-} from "@heroicons/react/24/outline";
+import { UserCircleIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import { ModeratorsField } from "@/app/lib/definitions";
 import { createCampaign } from "@/app/lib/actions";

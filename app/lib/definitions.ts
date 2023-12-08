@@ -52,3 +52,9 @@ export type StocksTable = {
     item_unit: string;
     item_quantity: number;
 };
+
+export type DonationItemForm = {
+    id: string;
+    name: string;
+    unit: string;
+}
