@@ -1,6 +1,11 @@
 // import { deleteInvoice } from '@/app/lib/actions';
 import { deleteCampaign } from "@/app/lib/actions";
-import { fetchTeamsCountWithCampaignId, fetchTeamsWithCampaignId } from "@/app/lib/data";
+import {
+    fetchIfAnyStockItemWithCampaignId,
+    fetchIfAnyTeamWithCampaignId,
+    fetchTeamsCountWithCampaignId,
+    fetchTeamsWithCampaignId,
+} from "@/app/lib/data";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
@@ -29,17 +34,18 @@ export function UpdateCampaign({ id }: { id: string }) {
 
 export async function DeleteCampaign({ id }: { id: string }) {
     const deleteCampaignWithId = deleteCampaign.bind(null, id);
-    const teamsCount = await fetchTeamsCountWithCampaignId(id);
+    const anyTeamExist = await fetchIfAnyTeamWithCampaignId(id);
+    const stockItemExist = await fetchIfAnyStockItemWithCampaignId(id);
     return (
         <>
             <form action={deleteCampaignWithId}>
                 <button
                     className={`p-2 ${
-                        teamsCount > 0
+                        anyTeamExist || stockItemExist
                             ? "cursor-not-allowed text-gray-200"
                             : "text-red-500 hover:text-red-200"
                     }`}
-                    disabled={teamsCount > 0}
+                    disabled={anyTeamExist || stockItemExist}
                 >
                     <span className="sr-only">Delete</span>
                     <TrashIcon className="w-5" />

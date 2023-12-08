@@ -266,6 +266,44 @@ export async function fetchTeamsCountWithCampaignId(id: string) {
     }
 }
 
+export async function fetchIfAnyTeamWithCampaignId(id: string) {
+    noStore();
+
+    try {
+        const result = await sql`
+            SELECT EXISTS (
+                SELECT 1 FROM teams WHERE campaign_id = ${id}
+            ) AS "exists";
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return result.rows[0].exists;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(
+            `Failed to check if team exists with campaign id ${id}. Error: ${err.message}`
+        );
+    }
+}
+
+export async function fetchIfAnyStockItemWithCampaignId(id: string) {
+    noStore();
+
+    try {
+        const result = await sql`
+            SELECT EXISTS (
+                SELECT 1 FROM campaign_stocks WHERE campaign_id = ${id}
+            ) AS "exists";
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return result.rows[0].exists;
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(
+            `Failed to check if stock item exists with campaign id ${id}. Error: ${err.message}`
+        );
+    }
+}
+
 export async function fetchUserById(id: string) {
     noStore();
 
