@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-    { name: "Stock", f_href: "/admin/campaigns/", l_href: "" },
+    { name: "Stocks", f_href: "/admin/campaigns/", l_href: "" },
     {
         name: "Teams",
         f_href: "/admin/campaigns/",

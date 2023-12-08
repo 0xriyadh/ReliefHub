@@ -44,3 +44,11 @@ export type TeamField = {
     team_leader_id: string;
     campaign_id: string;
 };
+
+export type StocksTable = {
+    donation_item_id: string;
+    campaign_id: string;
+    item_name: string;
+    item_unit: string;
+    item_quantity: number;
+};

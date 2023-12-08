@@ -2,7 +2,7 @@ import Pagination from "@/app/ui/campaigns/pagination";
 import Search from "@/app/ui/search";
 import Table from "@/app/ui/campaigns/table";
 import { CreateCampaign } from "@/app/ui/campaigns/buttons";
-import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
+import { TableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import { fetchFilteredCampaigns, fetchCampaignsPages } from "@/app/lib/data";
 
@@ -31,7 +31,7 @@ export default async function Page({
             </div>
             <Suspense
                 key={query + currentPage}
-                fallback={<InvoicesTableSkeleton />}
+                fallback={<TableSkeleton />}
             >
                 <Table query={query} currentPage={currentPage} />
             </Suspense>

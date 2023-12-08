@@ -17,7 +17,7 @@ async function Layout({
 }) {
     const id = params.id;
     const campaign = await fetchCampaignById(id);
-    const campaignLeader = await fetchUserById(campaign.campaign_leader_id);
+    // const campaignLeader = await fetchUserById(campaign.campaign_leader_id);
     return (
         <main className="">
             <Breadcrumbs
@@ -31,10 +31,10 @@ async function Layout({
                 ]}
             />
             <div>
-                <p className="text-lg">
+                {/* <p className="text-lg">
                     <span className="font-bold">Leader: </span>{" "}
                     {campaignLeader.name}
-                </p>
+                </p> */}
                 <p className="text-lg">
                     <span className="font-bold">Status: </span>{" "}
                     {campaign.status == "active" ? "Active ✅" : "Archived ❌"}

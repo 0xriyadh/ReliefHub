@@ -488,7 +488,7 @@ const campaigns = [
         name: "Ramadan Campaign 2023",
         campaign_leader_id: users[1].id,
         status: "archived",
-        timestamp: "2021-06-12 12:00:00",
+        timestamp: "2023-05-12 12:00:00",
     },
     {
         id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
@@ -703,60 +703,74 @@ const donationItems = [
 
 const campaignStocks = [
     {
-        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
-        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        campaign_id: campaigns[0].id,
+        donation_item_id: donationItems[3].id,
+        quantity: 54000
     },
     {
-        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
-        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        campaign_id: campaigns[0].id,
+        donation_item_id: donationItems[0].id,
+        quantity: 230
     },
     {
-        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
-        donation_item_id: "9adc5ae2-20aa-4876-bbc1-a025ab763667",
+        campaign_id: campaigns[0].id,
+        donation_item_id: donationItems[1].id,
+        quantity: 250
     },
     {
-        campaign_id: "11731e47-c8f6-473a-8b3d-16cb7eaee456",
-        donation_item_id: "c957ee0f-231c-4daf-9d7e-36c240aec4bd",
+        campaign_id: campaigns[0].id,
+        donation_item_id: donationItems[4].id,
+        quantity: 30
     },
     {
-        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
-        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        campaign_id: campaigns[1].id,
+        donation_item_id: donationItems[3].id,
+        quantity: 75000
     },
     {
-        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
-        donation_item_id: "69f91dd0-7245-499f-a0ef-54728b974ff4",
+        campaign_id: campaigns[1].id,
+        donation_item_id: donationItems[0].id,
+        quantity: 200
     },
     {
-        campaign_id: "b0472fed-132f-4f2f-a473-e0d5f247e1c7",
-        donation_item_id: "e6048a84-6f67-4a7f-a0f0-5792f49c1000",
+        campaign_id: campaigns[1].id,
+        donation_item_id: donationItems[4].id,
+        quantity: 70
     },
     {
-        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
-        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        campaign_id: campaigns[2].id,
+        donation_item_id: donationItems[3].id,
+        quantity: 30000
     },
     {
-        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
-        donation_item_id: "e6048a84-6f67-4a7f-a0f0-5792f49c1000",
+        campaign_id: campaigns[2].id,
+        donation_item_id: donationItems[0].id,
+        quantity: 120
     },
     {
-        campaign_id: "fc399ab3-b73f-4d6d-a8a6-1140004b1250",
-        donation_item_id: "50051103-c5c5-4b41-9fef-51953890d900",
+        campaign_id: campaigns[2].id,
+        donation_item_id: donationItems[4].id,
+        quantity: 17
     },
     {
-        campaign_id: "dd53931d-171f-4a21-9965-8a715b59ea58",
-        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        campaign_id: campaigns[3].id,
+        donation_item_id: donationItems[3].id,
+        quantity: 45000
     },
     {
-        campaign_id: "dd53931d-171f-4a21-9965-8a715b59ea58",
-        donation_item_id: "50051103-c5c5-4b41-9fef-51953890d900",
+        campaign_id: campaigns[3].id,
+        donation_item_id: donationItems[4].id,
+        quantity: 32
     },
     {
-        campaign_id: "f9ce6e5a-0fe6-4c94-aa34-0a367495e6dc",
-        donation_item_id: "a00056bb-b6ad-4763-9e02-cbf4e966ac7d",
+        campaign_id: campaigns[4].id,
+        donation_item_id: donationItems[3].id,
+        quantity: 25000
     },
     {
-        campaign_id: "f9ce6e5a-0fe6-4c94-aa34-0a367495e6dc",
-        donation_item_id: "c957ee0f-231c-4daf-9d7e-36c240aec4bd",
+        campaign_id: campaigns[4].id,
+        donation_item_id: donationItems[4].id,
+        quantity: 90
     },
 ];
 

@@ -6,6 +6,7 @@ import {
     LatestDonations,
     LatestReliefs,
     ModeratorsField,
+    StocksTable,
     TeamField,
 } from "./definitions";
 
@@ -282,5 +283,67 @@ export async function fetchUserById(id: string) {
     } catch (err) {
         console.error("Database Error:", err);
         throw new Error("Failed to fetch user with ID.");
+    }
+}
+
+export async function fetchFilteredStocks(
+    campaign_id: string,
+    currentPage: number
+) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    try {
+        console.log("Fetching filtered stocks ...");
+        const campaigns = await sql<StocksTable>`
+            SELECT 
+                campaigns.id AS campaign_id,
+                donation_items.id AS donation_item_id,
+                donation_items.name AS item_name, 
+                donation_items.unit AS item_unit, 
+                campaign_stocks.quantity AS item_quantity
+            FROM 
+                campaign_stocks
+            JOIN 
+                campaigns ON campaign_stocks.campaign_id = campaigns.id
+            JOIN 
+                donation_items ON campaign_stocks.donation_item_id = donation_items.id
+            WHERE
+                campaigns.id=${campaign_id}
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log("Fetching filtered stocks completed after 1 sec. ");
+        return campaigns.rows;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch filtered stocks.");
+    }
+}
+
+export async function fetchCampaignStocksPages(id: string) {
+    noStore();
+
+    try {
+        const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                campaign_stocks
+            JOIN 
+                campaigns ON campaign_stocks.campaign_id = campaigns.id
+            JOIN 
+                donation_items ON campaign_stocks.donation_item_id = donation_items.id
+            WHERE
+                campaigns.id=${id};
+        `;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const totalPages = Math.ceil(
+            Number(count.rows[0].count) / ITEMS_PER_PAGE
+        );
+        return totalPages;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch total number of campaigns.");
     }
 }

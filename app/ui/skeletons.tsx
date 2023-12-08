@@ -165,7 +165,7 @@ export function InvoicesMobileSkeleton() {
     );
 }
 
-export function InvoicesTableSkeleton() {
+export function TableSkeleton() {
     return (
         <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
