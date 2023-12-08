@@ -1,6 +1,13 @@
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
-import { CampaignForm, CampaignsTable, LatestDonations, LatestReliefs, ModeratorsField } from "./definitions";
+import {
+    CampaignForm,
+    CampaignsTable,
+    LatestDonations,
+    LatestReliefs,
+    ModeratorsField,
+    TeamField,
+} from "./definitions";
 
 export async function fetchCardData() {
     noStore();
@@ -173,27 +180,24 @@ export async function fetchCampaignsPages(query: string) {
 }
 
 export async function fetchCampaignById(id: string) {
-  noStore();
+    noStore();
 
     try {
-      const data = await sql<CampaignForm>`
+        const data = await sql<CampaignForm>`
         SELECT
-            id,
-            name, 
-            campaign_leader_id,
-            status
+            *
         FROM 
             campaigns
         WHERE
             id = ${id};
     `;
 
-    const campaigns = data.rows[0];
-    return campaigns;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error("Failed to fetch campaign with ID.");
-  }
+        const campaigns = data.rows[0];
+        return campaigns;
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw new Error("Failed to fetch campaign with ID.");
+    }
 }
 
 export async function fetchModerators() {
@@ -222,10 +226,10 @@ export async function fetchModerators() {
 
 export async function fetchTeamsWithCampaignId(id: string) {
     noStore();
-    
+
     try {
-        const teams = await sql`
-            SELECT name FROM 
+        const teams = await sql<TeamField>`
+            SELECT * FROM 
                 teams
             WHERE
                 campaign_id = ${id};
@@ -233,6 +237,27 @@ export async function fetchTeamsWithCampaignId(id: string) {
         return teams.rows;
     } catch (err: any) {
         console.error("Database Error:", err);
-        throw new Error(`Failed to fetch teams with campaign id ${id}. Error: ${err.message}`);
+        throw new Error(
+            `Failed to fetch teams with campaign id ${id}. Error: ${err.message}`
+        );
+    }
+}
+
+export async function fetchTeamsCountWithCampaignId(id: string) {
+    noStore();
+
+    try {
+        const count = await sql`
+            SELECT COUNT(*) FROM 
+                teams
+            WHERE
+                campaign_id = ${id};
+        `;
+        return Number(count.rows[0].count);
+    } catch (err: any) {
+        console.error("Database Error:", err);
+        throw new Error(
+            `Failed to fetch teams count with campaign id ${id}. Error: ${err.message}`
+        );
     }
 }

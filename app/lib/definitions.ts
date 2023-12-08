@@ -28,9 +28,19 @@ export type CampaignForm = {
     name: string;
     campaign_leader_id: string;
     status: "active" | "archived";
+    timestamp: string;
 };
 
 export type ModeratorsField = {
     id: string;
     name: string;
 }
+
+export type TeamField = {
+    id: string;
+    name: string;
+    district: string;
+    status: "active" | "archived";
+    team_leader_id: string;
+    campaign_id: string;
+};
