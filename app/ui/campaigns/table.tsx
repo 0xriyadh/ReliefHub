@@ -2,9 +2,10 @@ import { UpdateCampaign, DeleteCampaign } from "@/app/ui/campaigns/buttons";
 import InvoiceStatus from "@/app/ui/campaigns/status";
 import { formatDateToLocal } from "@/app/lib/utils";
 import { fetchFilteredCampaigns, fetchModerators } from "@/app/lib/data";
+import Link from "next/link";
 
 
-export default async function InvoicesTable({
+export default async function CampaignsTable({
     query,
     currentPage,
 }: {
@@ -93,7 +94,11 @@ export default async function InvoicesTable({
                                 >
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex items-center gap-3">
-                                            <p>{campaign.name}</p>
+                                            <Link
+                                                href={`/admin/campaigns/${campaign.id}`}
+                                            >
+                                                <p className="hover:text-primary-color-600">{campaign.name}</p>
+                                            </Link>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-3">
