@@ -1,6 +1,5 @@
-import { fetchCampaignStocksPages, fetchTeamsPages } from '@/app/lib/data';
-import { CreateStockItem } from '@/app/ui/campaign/stock-buttons';
-import StocksTable from '@/app/ui/campaign/stock-table';
+import { fetchTeamsPages } from '@/app/lib/data';
+import { CreateTeam } from '@/app/ui/campaign/teams-buttons';
 import TeamsTable from '@/app/ui/campaign/teams-table';
 import Pagination from '@/app/ui/campaigns/pagination';
 import { TableSkeleton } from '@/app/ui/skeletons';
@@ -22,7 +21,7 @@ async function Page({
   return (
     <div>
       <div className="mt-4 flex">
-        <CreateStockItem campaignId={id} />
+        <CreateTeam campaignId={id} />
       </div>
       <Suspense key={id} fallback={<TableSkeleton />}>
         <TeamsTable id={id} currentPage={currentPage} />

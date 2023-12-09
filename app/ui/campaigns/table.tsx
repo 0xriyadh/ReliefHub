@@ -1,7 +1,9 @@
 import { UpdateCampaign, DeleteCampaign } from '@/app/ui/campaigns/buttons';
 import Status from '@/app/ui/campaigns/status';
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredCampaigns, fetchModerators } from '@/app/lib/data';
+import {
+  fetchFilteredCampaigns,
+} from '@/app/lib/data';
 import Link from 'next/link';
 
 export default async function CampaignsTable({

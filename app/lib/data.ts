@@ -195,27 +195,57 @@ export async function fetchCampaignById(id: string) {
   }
 }
 
-export async function fetchModerators() {
+export async function fetchModeratorsWithoutActiveCampaign() {
   noStore();
 
   try {
     const data = await sql<ModeratorsField>`
-        SELECT
-            id, 
-            name
-        FROM 
-            users
-        WHERE
-            role = 'moderator'
-        ORDER BY
-            name ASC;
+      SELECT
+          id, 
+          name
+      FROM 
+          users
+      WHERE
+          role = 'moderator'
+          AND id NOT IN (
+              SELECT campaign_leader_id FROM campaigns WHERE status = 'active'
+          )
+      ORDER BY
+          name ASC;
     `;
 
     const moderators = data.rows;
     return moderators;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch all moderators.');
+    throw new Error('Failed to fetch moderators without active campaigns.');
+  }
+}
+
+export async function fetchModeratorsWithoutActiveTeam() {
+  noStore();
+
+  try {
+    const data = await sql<ModeratorsField>`
+      SELECT
+          id, 
+          name
+      FROM 
+          users
+      WHERE
+          role = 'moderator'
+          AND id NOT IN (
+              SELECT team_leader_id FROM teams WHERE status = 'active'
+          )
+      ORDER BY
+          name ASC;
+    `;
+
+    const moderators = data.rows;
+    return moderators;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all moderators without active teams.');
   }
 }
 
