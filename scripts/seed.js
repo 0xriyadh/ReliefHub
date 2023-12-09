@@ -132,7 +132,7 @@ async function seedTeams(client) {
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
             name VARCHAR(150) NOT NULL,
             district VARCHAR(150) NOT NULL,
-            status team_status NOT NULL,
+            status team_status NOT NULL DEFAULT 'active',
             team_leader_id UUID NOT NULL,
             campaign_id UUID NOT NULL,
             FOREIGN KEY (team_leader_id) REFERENCES users(id),
