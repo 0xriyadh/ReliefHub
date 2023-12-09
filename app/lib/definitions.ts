@@ -53,6 +53,15 @@ export type StocksTable = {
     item_quantity: number;
 };
 
+export type TeamsTable = {
+    id: string;
+    name: string;
+    district: string;
+    status: "active" | "archived";
+    team_leader_id: string;
+    team_leader_name: string;
+};
+
 export type DonationItemForm = {
     id: string;
     name: string;

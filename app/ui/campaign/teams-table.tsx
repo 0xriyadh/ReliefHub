@@ -1,16 +1,17 @@
 import {
-    fetchFilteredStocks,
+    fetchFilteredStocks, fetchFilteredTeams,
 } from "@/app/lib/data";
 import { DeleteStockItem } from "./stock-buttons";
+import Status from "../campaigns/status";
 
-export default async function StocksTable({
+export default async function TeamsTable({
     id,
     currentPage,
 }: {
     id: string;
     currentPage: number;
 }) {
-    const stocks = await fetchFilteredStocks(id, currentPage);
+    const teams = await fetchFilteredTeams(id, currentPage);
 
     return (
         <div className="mt-6 flow-root">
@@ -26,19 +27,25 @@ export default async function StocksTable({
                                     scope="col"
                                     className="px-4 py-5 font-medium sm:pl-6"
                                 >
-                                    Item Name
+                                    Team Name
                                 </th>
                                 <th
                                     scope="col"
                                     className="px-3 py-5 font-medium"
                                 >
-                                    Quantity
+                                    Team Leader
                                 </th>
                                 <th
                                     scope="col"
                                     className="px-3 py-5 font-medium"
                                 >
-                                    Unit
+                                    District
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-5 font-medium"
+                                >
+                                    Team Status
                                 </th>
                                 <th
                                     scope="col"
@@ -49,23 +56,26 @@ export default async function StocksTable({
                             </tr>
                         </thead>
                         <tbody className="bg-white">
-                            {stocks?.map((stock) => (
+                            {teams?.map((team) => (
                                 <tr
-                                    key={stock.donation_item_id}
+                                    key={team.id}
                                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                                 >
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex items-center gap-3">
                                             <p>
-                                                {stock.item_name}
+                                                {team.name}
                                             </p>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-3">
-                                        {stock.item_quantity.toLocaleString()}
+                                        {team.team_leader_name}
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-3">
-                                        {stock.item_unit}
+                                        {team.district}
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 py-3">
+                                        <Status status={team.status} />
                                     </td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end items-center gap-3">
@@ -75,12 +85,12 @@ export default async function StocksTable({
                                                 }
                                                 campaignId={stock.campaign_id}
                                             /> */}
-                                            <DeleteStockItem
+                                            {/* <DeleteStockItem
                                                 donationItemId={
-                                                    stock.donation_item_id
+                                                    team.donation_item_id
                                                 }
-                                                campaignId={stock.campaign_id}
-                                            />
+                                                campaignId={team.campaign_id}
+                                            /> */}
                                         </div>
                                     </td>
                                 </tr>
