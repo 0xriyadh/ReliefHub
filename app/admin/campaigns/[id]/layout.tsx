@@ -4,8 +4,8 @@ import { fetchCampaignById, fetchUserById } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/campaigns/breadcrumbs";
 
 export const metadata: Metadata = {
-    title: "Relief Hub: Admin Panel",
-    description: "Admin Panel for Relief Hub App",
+    title: "Relief Hub: Campaign",
+    description: "Campaign for Relief Hub App",
 };
 
 async function Layout({
