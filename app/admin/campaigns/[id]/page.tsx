@@ -1,4 +1,4 @@
-import { fetchCampaignStocksPages, fetchTeamsWithCampaignId } from "@/app/lib/data";
+import { fetchCampaignStocksPages } from "@/app/lib/data";
 import { CreateStockItem } from "@/app/ui/campaign/stock-buttons";
 import StocksTable from "@/app/ui/campaign/stock-table";
 import Pagination from "@/app/ui/campaigns/pagination";

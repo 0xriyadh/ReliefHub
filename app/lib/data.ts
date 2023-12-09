@@ -1,54 +1,55 @@
-import { sql } from "@vercel/postgres";
-import { unstable_noStore as noStore } from "next/cache";
+import { sql } from '@vercel/postgres';
+import { unstable_noStore as noStore } from 'next/cache';
 import {
-    CampaignForm,
-    CampaignsTable,
-    DonationItemForm,
-    LatestDonations,
-    LatestReliefs,
-    ModeratorsField,
-    StocksTable,
-    TeamField,
-} from "./definitions";
+  CampaignForm,
+  CampaignsTable,
+  DonationItemForm,
+  LatestDonations,
+  LatestReliefs,
+  ModeratorsField,
+  StocksTable,
+  TeamField,
+  TeamsTable,
+} from './definitions';
 
 export async function fetchCardData() {
-    noStore();
+  noStore();
 
-    try {
-        const moderatorsCountPromise = sql`SELECT COUNT(*) FROM users WHERE role = 'moderator'`;
-        const volunteersCountPromise = sql`SELECT COUNT(*) FROM users WHERE role = 'volunteer'`;
-        const campaignsCountPromise = sql`SELECT COUNT(*) FROM campaigns`;
-        const donationsCountPromise = sql`SELECT COUNT(*) FROM transactions WHERE donor_id IS NOT NULL;`;
+  try {
+    const moderatorsCountPromise = sql`SELECT COUNT(*) FROM users WHERE role = 'moderator'`;
+    const volunteersCountPromise = sql`SELECT COUNT(*) FROM users WHERE role = 'volunteer'`;
+    const campaignsCountPromise = sql`SELECT COUNT(*) FROM campaigns`;
+    const donationsCountPromise = sql`SELECT COUNT(*) FROM transactions WHERE donor_id IS NOT NULL;`;
 
-        const data = await Promise.all([
-            moderatorsCountPromise,
-            volunteersCountPromise,
-            campaignsCountPromise,
-            donationsCountPromise,
-        ]);
+    const data = await Promise.all([
+      moderatorsCountPromise,
+      volunteersCountPromise,
+      campaignsCountPromise,
+      donationsCountPromise,
+    ]);
 
-        const numberOfModerators = Number(data[0].rows[0].count ?? "0");
-        const numberOfVolunteers = Number(data[1].rows[0].count ?? "0");
-        const numberOfCampaigns = Number(data[2].rows[0].count ?? "0");
-        const numberOfDonations = Number(data[3].rows[0].count ?? "0");
+    const numberOfModerators = Number(data[0].rows[0].count ?? '0');
+    const numberOfVolunteers = Number(data[1].rows[0].count ?? '0');
+    const numberOfCampaigns = Number(data[2].rows[0].count ?? '0');
+    const numberOfDonations = Number(data[3].rows[0].count ?? '0');
 
-        return {
-            numberOfModerators,
-            numberOfVolunteers,
-            numberOfCampaigns,
-            numberOfDonations,
-        };
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch card data.");
-    }
+    return {
+      numberOfModerators,
+      numberOfVolunteers,
+      numberOfCampaigns,
+      numberOfDonations,
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch card data.');
+  }
 }
 
 export async function fetchLatestDonations() {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql<LatestDonations>`
+  try {
+    const data = await sql<LatestDonations>`
           SELECT 
               t.id,
               di.name AS donation_item_name,
@@ -71,23 +72,23 @@ export async function fetchLatestDonations() {
           LIMIT 5;
         `;
 
-        console.log("Fetching latest donations ...");
+    console.log('Fetching latest donations ...');
 
-        const latestDonations = data.rows;
+    const latestDonations = data.rows;
 
-        console.log("Data fetch completed after 1 second.");
-        return latestDonations;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch the latest donations.");
-    }
+    console.log('Data fetch completed after 1 second.');
+    return latestDonations;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest donations.');
+  }
 }
 
 export async function fetchLatestReliefs() {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql<LatestReliefs>`
+  try {
+    const data = await sql<LatestReliefs>`
           SELECT 
               r.id,
               r.name AS relief_name,
@@ -102,28 +103,28 @@ export async function fetchLatestReliefs() {
           LIMIT 5;
         `;
 
-        console.log("Fetching reliefs data...");
+    console.log('Fetching reliefs data...');
 
-        const latestReliefs = data.rows;
+    const latestReliefs = data.rows;
 
-        console.log("Data fetch completed after 1 second.");
-        return latestReliefs;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch the latest reliefs.");
-    }
+    console.log('Data fetch completed after 1 second.');
+    return latestReliefs;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest reliefs.');
+  }
 }
 
 const ITEMS_PER_PAGE = 5;
 export async function fetchFilteredCampaigns(
-    query: string,
-    currentPage: number
+  query: string,
+  currentPage: number,
 ) {
-    noStore();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-    try {
-        const campaigns = await sql<CampaignsTable>`
+  try {
+    const campaigns = await sql<CampaignsTable>`
         SELECT 
             c.id,
             c.name,
@@ -144,18 +145,18 @@ export async function fetchFilteredCampaigns(
             c.timestamp DESC
         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};`;
 
-        return campaigns.rows;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch filtered campaigns.");
-    }
+    return campaigns.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered campaigns.');
+  }
 }
 
 export async function fetchCampaignsPages(query: string) {
-    noStore();
+  noStore();
 
-    try {
-        const count = await sql`SELECT COUNT(*)
+  try {
+    const count = await sql`SELECT COUNT(*)
         FROM 
             campaigns c
         JOIN 
@@ -165,21 +166,19 @@ export async function fetchCampaignsPages(query: string) {
             c.name ILIKE ${`%${query}%`} OR
             c.status::text ILIKE ${`%${query}%`};`;
 
-        const totalPages = Math.ceil(
-            Number(count.rows[0].count) / ITEMS_PER_PAGE
-        );
-        return totalPages;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch total number of campaigns.");
-    }
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of campaigns.');
+  }
 }
 
 export async function fetchCampaignById(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql<CampaignForm>`
+  try {
+    const data = await sql<CampaignForm>`
         SELECT
             *
         FROM 
@@ -188,19 +187,19 @@ export async function fetchCampaignById(id: string) {
             id = ${id};
     `;
 
-        const campaigns = data.rows[0];
-        return campaigns;
-    } catch (err) {
-        console.error("Database Error:", err);
-        throw new Error("Failed to fetch campaign with ID.");
-    }
+    const campaigns = data.rows[0];
+    return campaigns;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch campaign with ID.');
+  }
 }
 
 export async function fetchModerators() {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql<ModeratorsField>`
+  try {
+    const data = await sql<ModeratorsField>`
         SELECT
             id, 
             name
@@ -212,97 +211,97 @@ export async function fetchModerators() {
             name ASC;
     `;
 
-        const moderators = data.rows;
-        return moderators;
-    } catch (err) {
-        console.error("Database Error:", err);
-        throw new Error("Failed to fetch all moderators.");
-    }
+    const moderators = data.rows;
+    return moderators;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all moderators.');
+  }
 }
 
 export async function fetchTeamsWithCampaignId(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const teams = await sql<TeamField>`
+  try {
+    const teams = await sql<TeamField>`
             SELECT * FROM 
                 teams
             WHERE
                 campaign_id = ${id};
         `;
 
-        return teams.rows;
-    } catch (err: any) {
-        console.error("Database Error:", err);
-        throw new Error(
-            `Failed to fetch teams with campaign id ${id}. Error: ${err.message}`
-        );
-    }
+    return teams.rows;
+  } catch (err: any) {
+    console.error('Database Error:', err);
+    throw new Error(
+      `Failed to fetch teams with campaign id ${id}. Error: ${err.message}`,
+    );
+  }
 }
 
 export async function fetchTeamsCountWithCampaignId(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const count = await sql`
+  try {
+    const count = await sql`
             SELECT COUNT(*) FROM 
                 teams
             WHERE
                 campaign_id = ${id};
         `;
 
-        return Number(count.rows[0].count);
-    } catch (err: any) {
-        console.error("Database Error:", err);
-        throw new Error(
-            `Failed to fetch teams count with campaign id ${id}. Error: ${err.message}`
-        );
-    }
+    return Number(count.rows[0].count);
+  } catch (err: any) {
+    console.error('Database Error:', err);
+    throw new Error(
+      `Failed to fetch teams count with campaign id ${id}. Error: ${err.message}`,
+    );
+  }
 }
 
 export async function fetchIfAnyTeamWithCampaignId(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const result = await sql`
+  try {
+    const result = await sql`
             SELECT EXISTS (
                 SELECT 1 FROM teams WHERE campaign_id = ${id}
             ) AS "exists";
         `;
 
-        return result.rows[0].exists;
-    } catch (err: any) {
-        console.error("Database Error:", err);
-        throw new Error(
-            `Failed to check if team exists with campaign id ${id}. Error: ${err.message}`
-        );
-    }
+    return result.rows[0].exists;
+  } catch (err: any) {
+    console.error('Database Error:', err);
+    throw new Error(
+      `Failed to check if team exists with campaign id ${id}. Error: ${err.message}`,
+    );
+  }
 }
 
 export async function fetchIfAnyStockItemWithCampaignId(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const result = await sql`
+  try {
+    const result = await sql`
             SELECT EXISTS (
                 SELECT 1 FROM campaign_stocks WHERE campaign_id = ${id}
             ) AS "exists";
         `;
 
-        return result.rows[0].exists;
-    } catch (err: any) {
-        console.error("Database Error:", err);
-        throw new Error(
-            `Failed to check if stock item exists with campaign id ${id}. Error: ${err.message}`
-        );
-    }
+    return result.rows[0].exists;
+  } catch (err: any) {
+    console.error('Database Error:', err);
+    throw new Error(
+      `Failed to check if stock item exists with campaign id ${id}. Error: ${err.message}`,
+    );
+  }
 }
 
 export async function fetchUserById(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql`
+  try {
+    const data = await sql`
         SELECT
             *
         FROM 
@@ -311,24 +310,24 @@ export async function fetchUserById(id: string) {
             id = ${id};
     `;
 
-        const user = data.rows[0];
-        return user;
-    } catch (err) {
-        console.error("Database Error:", err);
-        throw new Error("Failed to fetch user with ID.");
-    }
+    const user = data.rows[0];
+    return user;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch user with ID.');
+  }
 }
 
 export async function fetchFilteredStocks(
-    campaign_id: string,
-    currentPage: number
+  campaign_id: string,
+  currentPage: number,
 ) {
-    noStore();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-    try {
-        console.log("Fetching filtered stocks ...");
-        const campaigns = await sql<StocksTable>`
+  try {
+    console.log('Fetching filtered stocks ...');
+    const campaignStocks = await sql<StocksTable>`
             SELECT 
                 campaigns.id AS campaign_id,
                 donation_items.id AS donation_item_id,
@@ -346,19 +345,19 @@ export async function fetchFilteredStocks(
             LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
         `;
 
-        console.log("Fetching filtered stocks completed after 1 sec. ");
-        return campaigns.rows;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch filtered stocks.");
-    }
+    console.log('Fetching filtered stocks completed after 1 sec. ');
+    return campaignStocks.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered stocks.');
+  }
 }
 
 export async function fetchCampaignStocksPages(id: string) {
-    noStore();
+  noStore();
 
-    try {
-        const count = await sql`
+  try {
+    const count = await sql`
             SELECT 
                 COUNT(*)
             FROM 
@@ -371,21 +370,19 @@ export async function fetchCampaignStocksPages(id: string) {
                 campaigns.id=${id};
         `;
 
-        const totalPages = Math.ceil(
-            Number(count.rows[0].count) / ITEMS_PER_PAGE
-        );
-        return totalPages;
-    } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error("Failed to fetch total number of campaigns.");
-    }
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of campaigns.');
+  }
 }
 
 export async function fetchDonationItems(campaignId: string) {
-    noStore();
+  noStore();
 
-    try {
-        const data = await sql`
+  try {
+    const data = await sql`
         SELECT 
             donation_items.id,
             donation_items.name,
@@ -404,10 +401,67 @@ export async function fetchDonationItems(campaignId: string) {
             donation_items.name ASC;
         `;
 
-        const donationItems = data.rows as DonationItemForm[];
-        return donationItems;
-    } catch (err) {
-        console.error("Database Error:", err);
-        throw new Error("Failed to fetch donation items.");
-    }
+    const donationItems = data.rows as DonationItemForm[];
+    return donationItems;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch donation items.');
+  }
+}
+
+export async function fetchFilteredTeams(
+  campaign_id: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    console.log('Fetching filtered teams ...');
+    const campaignTeams = await sql<TeamsTable>`
+            SELECT 
+                teams.id, 
+                teams.name, 
+                teams.district, 
+                teams.status, 
+                users.name AS team_leader_name, 
+                users.id AS team_leader_id 
+            FROM 
+                teams 
+            JOIN 
+                users ON teams.team_leader_id = users.id 
+            WHERE 
+                teams.campaign_id = ${campaign_id}
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+
+    console.log('Fetching filtered teams completed after 1 sec. ');
+    return campaignTeams.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered tems.');
+  }
+}
+
+export async function fetchTeamsPages(campaign_id: string) {
+  noStore();
+
+  try {
+    const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                teams 
+            JOIN 
+                users ON teams.team_leader_id = users.id 
+            WHERE 
+                teams.campaign_id = ${campaign_id};
+        `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of teams.');
+  }
 }

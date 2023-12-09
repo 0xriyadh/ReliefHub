@@ -1,9 +1,4 @@
-// import { deleteInvoice } from '@/app/lib/actions';
-import { deleteCampaign, deleteCampaignStock } from "@/app/lib/actions";
-import {
-    fetchTeamsCountWithCampaignId,
-    fetchTeamsWithCampaignId,
-} from "@/app/lib/data";
+import { deleteCampaignStock } from "@/app/lib/actions";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
