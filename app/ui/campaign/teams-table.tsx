@@ -3,6 +3,7 @@ import {
 } from "@/app/lib/data";
 import { DeleteStockItem } from "./stock-buttons";
 import Status from "../campaigns/status";
+import { DeleteTeam } from "./teams-buttons";
 
 export default async function TeamsTable({
     id,
@@ -85,12 +86,7 @@ export default async function TeamsTable({
                                                 }
                                                 campaignId={stock.campaign_id}
                                             /> */}
-                                            {/* <DeleteStockItem
-                                                donationItemId={
-                                                    team.donation_item_id
-                                                }
-                                                campaignId={team.campaign_id}
-                                            /> */}
+                                            <DeleteTeam teamId={team.id} />
                                         </div>
                                     </td>
                                 </tr>

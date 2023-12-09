@@ -1,5 +1,4 @@
-import { fetchDonationItems, fetchModeratorsWithoutActiveTeam } from "@/app/lib/data";
-import CreateStockForm from "@/app/ui/campaign/stock-create-form";
+import { fetchModeratorsWithoutActiveTeam } from "@/app/lib/data";
 import CreateTeamForm from "@/app/ui/campaign/teams-create-form";
 
 export default async function Page({ params }: { params: { id: string } }) {
