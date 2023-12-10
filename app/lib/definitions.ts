@@ -86,3 +86,11 @@ export type DonationItemForm = {
   name: string;
   unit: string;
 };
+
+export type UserTable = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'moderator' | 'volunteer';
+  type: 'donor' | 'recipient';
+}

@@ -1,36 +1,38 @@
-import { fetchFilteredReliefs } from '@/app/lib/data';
-import { DeleteTeam } from './teams-buttons';
-import { formatDateToLocal } from '@/app/lib/utils';
-import { DeleteRelief } from './reliefs-buttons';
+import { UpdateCampaign, DeleteCampaign } from '@/app/ui/campaigns/buttons';
+import Status from '@/app/ui/members/status';
+import { fetchFilteredUsers } from '@/app/lib/data';
 import Link from 'next/link';
 
-export default async function ReliefsTable({
-  id,
+export default async function MembersTable({
+  query,
   currentPage,
 }: {
-  id: string;
+  query: string;
   currentPage: number;
 }) {
-  const reliefs = await fetchFilteredReliefs(id, currentPage);
+  const users = await fetchFilteredUsers(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            Kindly view this table on a larger screen.
+            kindly use a desktop to view the table
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Relief Name
+                  Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Relief Location
+                  Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Creation Date
+                  Role
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Type
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -38,36 +40,33 @@ export default async function ReliefsTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {reliefs?.map((relief) => (
+              {users?.map((user) => (
                 <tr
-                  key={relief.id}
+                  key={user.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Link
-                        className="hover:text-primary-color-600"
-                        href={`/admin/campaigns/${id}/reliefs/${relief.id}`}
-                      >
-                        {relief.name}
+                      <Link href={`/admin/campaigns/${user.id}`}>
+                        <p className="hover:text-primary-color-600">
+                          {user.name}
+                        </p>
                       </Link>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {relief.location}
+                    {user.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(relief.timestamp)}
+                    <Status status={user.role} />
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <Status status={user.type} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center justify-end gap-3">
-                      {/* <UpdateStockItem
-                            donationId={
-                                stock.donation_item_id
-                            }
-                            campaignId={stock.campaign_id}
-                        /> */}
-                      <DeleteRelief reliefId={relief.id} />
+                    <div className="flex justify-end gap-3">
+                      <UpdateCampaign id={user.id} />
+                      <DeleteCampaign id={user.id} />
                     </div>
                   </td>
                 </tr>

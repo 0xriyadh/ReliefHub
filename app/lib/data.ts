@@ -12,6 +12,7 @@ import {
   StocksTable,
   TeamField,
   TeamsTable,
+  UserTable,
 } from './definitions';
 
 export async function fetchCardData() {
@@ -615,5 +616,60 @@ export async function fetchDonationsPages(campaign_id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of donations.');
+  }
+}
+
+export async function fetchFilteredUsers(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const users = await sql<UserTable>`
+            SELECT 
+                id,
+                name,
+                email,
+                role,
+                type
+            FROM 
+                users
+            WHERE
+                name ILIKE ${`%${query}%`} OR
+                email ILIKE ${`%${query}%`} OR
+                role::text ILIKE ${`%${query}%`} OR
+                type::text ILIKE ${`%${query}%`}
+            ORDER BY
+                name ASC
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+
+    return users.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered users.');
+  }
+}
+
+export async function fetchUsersPages(query: string) {
+  noStore();
+
+  try {
+    const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                users
+            WHERE
+                name ILIKE ${`%${query}%`} OR
+                email ILIKE ${`%${query}%`} OR
+                role::text ILIKE ${`%${query}%`} OR
+                type::text ILIKE ${`%${query}%`};
+        `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of users.');
   }
 }
