@@ -186,36 +186,100 @@ export async function createCampaignTeam(formData: FormData) {
   redirect(`/admin/campaigns/${campaignId}/teams`);
 }
 
-export async function deleteCampaignTeam(id: string) { 
-    // Delete data from the database
+export async function deleteCampaignTeam(id: string) {
+  // Delete data from the database
+  try {
     try {
-        try {
-        await sql`
+      await sql`
                     DELETE FROM 
                     teams
                     WHERE
                     id = ${id};
                 `;
-        console.log('SQL deletion statement executed.');
-        } catch (sqlError: any) {
-        console.error('Error executing SQL deletion statement:', sqlError);
-        if (sqlError.code === '23503') {
-            throw new Error(
-            'This campaign is still referenced by a team and cannot be deleted.',
-            );
-        } else {
-            throw sqlError;
-        }
-        }
-        console.log('Campaign Team Deleted.');
-    
-        revalidatePath(`/admin/campaigns/${id}/teams`);
-        return { success: true, message: 'Campaign Team Deleted.' };
-    } catch (error: any) {
-        return {
-        success: false,
-        message: error.message,
-        error: error.toString(),
-        };
+      console.log('SQL deletion statement executed.');
+    } catch (sqlError: any) {
+      console.error('Error executing SQL deletion statement:', sqlError);
+      if (sqlError.code === '23503') {
+        throw new Error(
+          'This campaign is still referenced by a team and cannot be deleted.',
+        );
+      } else {
+        throw sqlError;
+      }
     }
+    console.log('Campaign Team Deleted.');
+
+    revalidatePath(`/admin/campaigns/${id}/teams`);
+    return { success: true, message: 'Campaign Team Deleted.' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      error: error.toString(),
+    };
+  }
+}
+
+export async function createRelief(formData: FormData) {
+  // Prepare data for insertion into the database
+  console.log(
+    'createRelief function called.',
+    Object.fromEntries(formData.entries()),
+  );
+  const { campaignId, name, location } =
+    Object.fromEntries(formData.entries()) || {};
+
+  // Insert data into the database
+  try {
+    console.log('Attempting to create relief.');
+    await sql`
+            INSERT INTO reliefs (name, location, campaign_id)
+            VALUES (${`${name}`}, ${`${location}`}, ${`${campaignId}`});
+        `;
+    console.log('Relief Created.');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Relief.',
+    };
+  }
+
+  // // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/admin/campaigns/${campaignId}/reliefs`);
+  redirect(`/admin/campaigns/${campaignId}/reliefs`);
+}
+
+export async function deleteRelief(id: string) {
+  // Delete data from the database
+  try {
+    try {
+      await sql`
+        DELETE 
+        FROM 
+          reliefs
+        WHERE
+          id = ${id};
+      `;
+      console.log('SQL deletion statement executed.');
+    } catch (sqlError: any) {
+      console.error('Error executing SQL deletion statement:', sqlError);
+      if (sqlError.code === '23503') {
+        throw new Error(
+          'This campaign is still referenced by a team and cannot be deleted.',
+        );
+      } else {
+        throw sqlError;
+      }
+    }
+    console.log('Relief Deleted.');
+
+    revalidatePath(`/admin/campaigns/${id}/reliefs`);
+    return { success: true, message: 'Relief Deleted.' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      error: error.toString(),
+    };
+  }
 }
