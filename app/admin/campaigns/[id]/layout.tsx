@@ -13,9 +13,10 @@ async function Layout({
     params,
 }: {
     children: React.ReactNode;
-    params: { id: string };
+    params: { id: string, reliefId: string };
 }) {
     const id = params.id;
+    const reliefId = params.reliefId;
     const campaign = await fetchCampaignById(id);
     return (
         <main>

@@ -72,12 +72,12 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   const className = clsx(
-      "flex h-10 w-10 items-center justify-center text-sm border border-gray-600",
-      {
-          "z-10 bg-gray-600 border-gray-600 text-white": isActive,
-          "hover:bg-gray-200": !isActive && position !== "middle",
-          "text-gray-300": position === "middle",
-      }
+    'flex h-10 w-10 items-center justify-center text-sm border border-gray-600',
+    {
+      'z-10 bg-gray-600 border-gray-600 text-white': isActive,
+      'hover:bg-gray-200': !isActive && position !== 'middle',
+      'text-gray-700': position === 'middle',
+    },
   );
 
   return isActive || position === 'middle' ? (
@@ -99,13 +99,13 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = clsx(
-      "flex h-10 w-10 items-center justify-center border border-gray-300",
-      {
-          "pointer-events-none text-gray-300": isDisabled,
-          "hover:bg-gray-200": !isDisabled,
-          "mr-2 md:mr-4": direction === "left",
-          "ml-2 md:ml-4": direction === "right",
-      }
+    'flex h-10 w-10 items-center justify-center border border-gray-300',
+    {
+      'pointer-events-none text-gray-400': isDisabled,
+      'hover:bg-gray-200': !isDisabled,
+      'mr-2 md:mr-4': direction === 'left',
+      'ml-2 md:ml-4': direction === 'right',
+    },
   );
 
   const icon =
