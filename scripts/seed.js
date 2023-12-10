@@ -30,7 +30,7 @@ async function seedUsers(client) {
             DROP TYPE user_type;
           END IF;
         END $$;
-        CREATE TYPE member_role AS ENUM ('president', 'moderator', 'volunteer');
+        CREATE TYPE user_role AS ENUM ('president', 'moderator', 'volunteer');
         CREATE TYPE user_type AS ENUM ('donor', 'recipient');
           CREATE TABLE IF NOT EXISTS users (
             id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -38,7 +38,7 @@ async function seedUsers(client) {
             phone VARCHAR(20) NOT NULL,
             email TEXT NOT NULL UNIQUE,
             address TEXT NOT NULL,
-            role member_role,
+            role user_role,
             type user_type NOT NULL,
             password TEXT NOT NULL
           );

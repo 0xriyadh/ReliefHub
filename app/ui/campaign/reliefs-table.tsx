@@ -47,7 +47,7 @@ export default async function ReliefsTable({
                     <div className="flex items-center gap-3">
                       <Link
                         className="hover:text-primary-color-600"
-                        href={`/admin/campaigns/${id}/reliefs/${relief.id}`}
+                        href={`/admin/relief/${relief.id}`}
                       >
                         {relief.name}
                       </Link>
