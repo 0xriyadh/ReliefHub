@@ -969,21 +969,21 @@ const transactions = [
 
 const recipientReceiveRelief = [
   {
-    relief_id: 'cea7d7a5-8629-4867-8404-2fda94e2c45e',
+    relief_id: reliefs[0].id,
     recipient_id: '5ba2632e-80f9-4129-9532-845fd30e110e',
     donation_item_id: '69f91dd0-7245-499f-a0ef-54728b974ff4',
     quantity: 5,
     timestamp: '2021-05-01 12:00:00',
   },
   {
-    relief_id: 'cea7d7a5-8629-4867-8404-2fda94e2c45e',
+    relief_id: reliefs[0].id,
     recipient_id: '13953a84-e63b-4ece-9f60-dd329baaf5e1',
     donation_item_id: '69f91dd0-7245-499f-a0ef-54728b974ff4',
     quantity: 10,
     timestamp: '2021-05-02 12:00:00',
   },
   {
-    relief_id: 'cea7d7a5-8629-4867-8404-2fda94e2c45e',
+    relief_id: reliefs[0].id,
     recipient_id: '2feb3c7e-e923-4f07-981f-746e8409a847',
     donation_item_id: '69f91dd0-7245-499f-a0ef-54728b974ff4',
     quantity: 3,
