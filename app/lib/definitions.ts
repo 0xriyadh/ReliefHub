@@ -106,6 +106,6 @@ export type UserTable = {
 export type ReliefStocksField = {
   transaction_id: string;
   name: string;
-  unit: string;
+  unit: 'kg' | 'piece' | 'BDT';
   quantity: number;
 }
