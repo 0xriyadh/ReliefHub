@@ -8,6 +8,8 @@ import {
   LatestDonations,
   LatestReliefs,
   ModeratorsField,
+  ReliefForm,
+  ReliefStocksField,
   ReliefsTable,
   StocksTable,
   TeamField,
@@ -195,6 +197,27 @@ export async function fetchCampaignById(id: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch campaign with ID.');
+  }
+}
+
+export async function fetchReliefById(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<ReliefForm>`
+        SELECT
+            *
+        FROM 
+            reliefs
+        WHERE
+            id = ${id};
+    `;
+
+    const relief = data.rows[0];
+    return relief;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch relief with ID.');
   }
 }
 
@@ -671,5 +694,32 @@ export async function fetchUsersPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of users.');
+  }
+}
+
+export async function fetchReliefStocks(reliefId: string) {
+  noStore();
+
+  try {
+    const data = await sql<ReliefStocksField>`
+        SELECT 
+            t.id as transaction_id,
+            d.name,
+            t.quantity,
+            d.unit
+        FROM
+            transactions t
+        JOIN
+            reliefs r ON t.relief_id = r.id
+        JOIN 
+            donation_items d ON t.donation_item_id = d.id
+        WHERE r.id = ${reliefId};
+      `;
+
+    const reliefStocks = data.rows;
+    return reliefStocks;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch relief stocks.');
   }
 }

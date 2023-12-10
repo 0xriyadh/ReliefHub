@@ -31,6 +31,14 @@ export type CampaignForm = {
   timestamp: string;
 };
 
+export type ReliefForm = {
+  id: string;
+  name: string;
+  location: string;
+  campaign_id: string;
+  timestamp: string;
+};
+
 export type ModeratorsField = {
   id: string;
   name: string;
@@ -93,4 +101,11 @@ export type UserTable = {
   email: string;
   role: 'admin' | 'moderator' | 'volunteer';
   type: 'donor' | 'recipient';
+}
+
+export type ReliefStocksField = {
+  transaction_id: string;
+  name: string;
+  unit: string;
+  quantity: number;
 }
