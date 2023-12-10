@@ -283,3 +283,38 @@ export async function deleteRelief(id: string) {
     };
   }
 }
+
+export async function deleteDonation(id: string) {
+  // Delete data from the database
+  try {
+    try {
+      await sql`
+        DELETE 
+        FROM 
+          transactions
+        WHERE
+          id = ${id};
+      `;
+      console.log('SQL deletion statement executed.');
+    } catch (sqlError: any) {
+      console.error('Error executing SQL deletion statement:', sqlError);
+      if (sqlError.code === '23503') {
+        throw new Error(
+          'This campaign is still referenced by a team and cannot be deleted.',
+        );
+      } else {
+        throw sqlError;
+      }
+    }
+    console.log('Donation Deleted.');
+
+    revalidatePath(`/admin/donations`);
+    return { success: true, message: 'Donation Deleted.' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      error: error.toString(),
+    };
+  }
+}

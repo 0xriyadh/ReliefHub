@@ -1,6 +1,6 @@
-import { fetchTeamsPages } from '@/app/lib/data';
+import { fetchDonationsPages } from '@/app/lib/data';
+import DonationsTable from '@/app/ui/campaign/donations-table';
 import { CreateTeam } from '@/app/ui/campaign/teams-buttons';
-import TeamsTable from '@/app/ui/campaign/teams-table';
 import Pagination from '@/app/ui/campaigns/pagination';
 import { TableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -16,15 +16,12 @@ async function Page({
 }) {
   const id = params.id;
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchTeamsPages(id);
+  const totalPages = await fetchDonationsPages(id);
 
   return (
     <div>
-      <div className="mt-4 flex">
-        <CreateTeam campaignId={id} />
-      </div>
       <Suspense key={id} fallback={<TableSkeleton />}>
-        <TeamsTable id={id} currentPage={currentPage} />
+        <DonationsTable id={id} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
