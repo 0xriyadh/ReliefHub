@@ -62,6 +62,14 @@ export type TeamsTable = {
     team_leader_name: string;
 };
 
+export type ReliefsTable = {
+    id: string;
+    name: string;
+    location: string;
+    campaign_id: string;
+    timestamp: string;
+};  
+
 export type DonationItemForm = {
     id: string;
     name: string;

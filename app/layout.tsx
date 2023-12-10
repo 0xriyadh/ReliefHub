@@ -3,8 +3,6 @@ import { Inter } from 'next/font/google'
 import '@/app/ui/globals.css'
 import { quicksand } from "./ui/fonts";
 
-const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
   title: 'Relief Hub: Home',
   description: 'Relief Hub: Natural Disaster Recovery Management App',

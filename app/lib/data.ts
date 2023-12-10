@@ -7,6 +7,7 @@ import {
   LatestDonations,
   LatestReliefs,
   ModeratorsField,
+  ReliefsTable,
   StocksTable,
   TeamField,
   TeamsTable,
@@ -462,6 +463,8 @@ export async function fetchFilteredTeams(
                 users ON teams.team_leader_id = users.id 
             WHERE 
                 teams.campaign_id = ${campaign_id}
+            ORDER BY
+                teams.name ASC
             LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
         `;
 
@@ -493,5 +496,55 @@ export async function fetchTeamsPages(campaign_id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of teams.');
+  }
+}
+
+export async function fetchFilteredReliefs(
+  campaign_id: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    console.log('Fetching filtered reliefs ...');
+    const campaignTeams = await sql<ReliefsTable>`
+            SELECT 
+                *
+            FROM 
+                reliefs 
+            WHERE 
+                campaign_id = ${campaign_id}
+            ORDER BY
+                timestamp DESC
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+
+    console.log('Fetching filtered reliefs completed after 1 sec. ');
+    return campaignTeams.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered reliefs.');
+  }
+}
+
+export async function fetchReliefsPages(campaign_id: string) {
+  noStore();
+
+  try {
+    const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                reliefs 
+            WHERE 
+                campaign_id = ${campaign_id}
+        `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of pages for reliefs.');
   }
 }
