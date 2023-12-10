@@ -7,11 +7,9 @@ async function Page({ params }: { params: { reliefId: string } }) {
 
   return (
     <div className="mt-8">
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>
           <ReliefStocksShowcase reliefId={reliefId} />
         </Suspense>
-      </div>
     </div>
   );
 }
