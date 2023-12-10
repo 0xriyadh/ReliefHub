@@ -4,6 +4,7 @@ import {
   CampaignForm,
   CampaignsTable,
   DonationItemForm,
+  DonationsTable,
   LatestDonations,
   LatestReliefs,
   ModeratorsField,
@@ -546,5 +547,73 @@ export async function fetchReliefsPages(campaign_id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of pages for reliefs.');
+  }
+}
+
+export async function fetchFilteredDonations(
+  campaign_id: string,
+  currentPage: number,
+) {
+  noStore();
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const donations = await sql<DonationsTable>`
+            SELECT 
+                t.id,
+                t.quantity,
+                t.timestamp,
+                t.status,
+                c.name AS campaign_name,
+                u.name AS donor_name,
+                di.name AS donation_item_name,
+                di.unit AS donation_item_unit
+            FROM 
+                transactions t
+            JOIN 
+                campaigns c ON t.campaign_id = c.id
+            JOIN 
+                users u ON t.donor_id = u.id
+            JOIN 
+                donation_items di ON t.donation_item_id = di.id
+            WHERE
+                t.campaign_id = ${campaign_id}
+            ORDER BY
+                t.timestamp DESC
+            LIMIT 
+                ${ITEMS_PER_PAGE} OFFSET ${offset};
+        `;
+
+    return donations.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered donations.');
+  }
+}
+
+export async function fetchDonationsPages(campaign_id: string) {
+  noStore();
+
+  try {
+    const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                transactions t
+            JOIN 
+                campaigns c ON t.campaign_id = c.id
+            JOIN 
+                users u ON t.donor_id = u.id
+            JOIN 
+                donation_items di ON t.donation_item_id = di.id
+            WHERE
+                t.campaign_id = ${campaign_id};
+        `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of donations.');
   }
 }
