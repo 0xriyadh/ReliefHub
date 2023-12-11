@@ -1,36 +1,22 @@
 'use client';
-
-import Link from 'next/link';
-import {
-  CalculatorIcon,
-  GiftIcon,
-} from '@heroicons/react/24/outline';
+import { CalculatorIcon, GiftIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import {
-  ReliefRecipientForDistribution,
-  ReliefStocksField,
-  StocksTable,
-} from '@/app/lib/definitions';
-import { createDistributeRelief } from '@/app/lib/actions';
+import { StocksTable } from '@/app/lib/definitions';
+import { createReliefStock } from '@/app/lib/actions';
+import Link from 'next/link';
 
 export default function CreateReliefStockForm({
   reliefId,
-  reliefStocks,
+  campaignId,
   donationItemsFromCampaignStocksNotInReliefStocks: items,
 }: {
   reliefId: string;
-  recipients: ReliefRecipientForDistribution[];
-  reliefStocks: ReliefStocksField[];
   campaignId: string;
   donationItemsFromCampaignStocksNotInReliefStocks: StocksTable[];
 }) {
-  const distributeRelief = createDistributeRelief.bind(
-    null,
-    reliefId,
-    reliefStocks,
-  );
+  const reliefStock = createReliefStock.bind(null, reliefId, campaignId, items);
   return (
-    <form action={distributeRelief}>
+    <form action={reliefStock}>
       <div className="bg-gray-50 p-4 md:p-6">
         {/* Donation Item */}
         <div className="mb-4">
@@ -54,10 +40,13 @@ export default function CreateReliefStockForm({
                   key={item.donation_item_id}
                   value={item.donation_item_id}
                 >
-                  {item.item_name}
                   {item.item_name +
                     ' ' +
-                    `(${item.item_quantity.toLocaleString()} ${item.item_unit} left)`}
+                    `(${item.item_quantity.toLocaleString()} ${
+                      item.item_unit
+                    } left)`}
+                  `(${item.item_quantity.toLocaleString()} ${item.item_unit}{' '}
+                  left)`
                 </option>
               ))}
             </select>
@@ -87,7 +76,7 @@ export default function CreateReliefStockForm({
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href={`/admin/relief/${reliefId}/distributions`}
+          href={`/admin/relief/${reliefId}`}
           className="flex h-10 items-center bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
