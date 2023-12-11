@@ -947,7 +947,7 @@ export async function fetchVolunteersByTeamId(id: string) {
 }
 
 // these volunteers might have worked in some archived teams before but currently not working in any active team
-export async function fetchAvailableVolunteers(id: string) {
+export async function fetchAvailableVolunteers() {
   noStore();
 
   try {
