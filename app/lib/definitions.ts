@@ -1,3 +1,14 @@
+export type User = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  role: 'president' | 'moderator' | 'volunteer' | null;
+  type: 'donor' | 'recipient';
+  password: string;
+};
+
 export type LatestDonations = {
   id: string;
   donation_item_name: string;
@@ -102,7 +113,7 @@ export type UserTable = {
   email: string;
   role: 'admin' | 'moderator' | 'volunteer';
   type: 'donor' | 'recipient';
-}
+};
 
 export type ReliefStocksField = {
   transaction_id: string;
@@ -110,7 +121,7 @@ export type ReliefStocksField = {
   name: string;
   unit: 'kg' | 'piece' | 'BDT';
   quantity: number;
-}
+};
 
 export type ReliefDistributionTable = {
   relief_id: string;
@@ -126,21 +137,21 @@ export type ReliefDistributionForm = {
   recipient_id: string;
   item_id: string;
   quantity: number;
-}
+};
 
 export type ReliefRecipientForDistribution = {
   id: string;
   name: string;
-}
+};
 
 export type TeamForm = {
   id: string;
   name: string;
-}
+};
 
 export type VolunteerField = {
   id: string;
   name: string;
   email: string;
   phone: string;
-}
+};
