@@ -986,10 +986,10 @@ export async function fetchAvailableVolunteers() {
 }
 
 export async function fetchUser(email: string) {
+
   try {
     const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
-    console.log('user from db', user.rows[0]);
-    return user.rows[0];
+    return user.rows[0] as User;
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
