@@ -1,6 +1,6 @@
 import {
   CurrencyBangladeshiIcon,
-  GifIcon,
+  GiftTopIcon,
   ScaleIcon,
   FaceFrownIcon,
 } from '@heroicons/react/24/outline';
@@ -8,7 +8,7 @@ import { fetchCardData, fetchReliefStocks } from '@/app/lib/data';
 
 const iconMap = {
   kg: ScaleIcon,
-  piece: GifIcon,
+  piece: GiftTopIcon,
   BDT: CurrencyBangladeshiIcon,
 };
 
