@@ -50,6 +50,7 @@ export type TeamField = {
   district: string;
   status: 'active' | 'archived';
   team_leader_id: string;
+  team_leader_name: string;
   campaign_id: string;
 };
 
@@ -135,4 +136,11 @@ export type ReliefRecipientForDistribution = {
 export type TeamForm = {
   id: string;
   name: string;
+}
+
+export type VolunteerField = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
 }

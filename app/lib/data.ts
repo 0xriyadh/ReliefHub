@@ -18,6 +18,7 @@ import {
   TeamForm,
   TeamsTable,
   UserTable,
+  VolunteerField,
 } from './definitions';
 
 export async function fetchCardData() {
@@ -864,7 +865,10 @@ export async function fetchReliefTeams(reliefId: string) {
   }
 }
 
-export async function fetchTeamsToAssignToRelief(campaign_id: string, reliefId: string) {
+export async function fetchTeamsToAssignToRelief(
+  campaign_id: string,
+  reliefId: string,
+) {
   noStore();
   try {
     const data = await sql<TeamForm>`
@@ -884,5 +888,98 @@ export async function fetchTeamsToAssignToRelief(campaign_id: string, reliefId: 
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch teams to assign to relief.');
+  }
+}
+
+export async function fetchTeamById(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<TeamField>`
+        SELECT
+            t.id,
+            t.name,
+            t.district,
+            t.status,
+            u.name AS team_leader_name,
+            u.id AS team_leader_id,
+            t.campaign_id
+        FROM 
+            teams t
+        JOIN
+            users u ON t.team_leader_id = u.id
+        WHERE
+            t.id = ${id};
+    `;
+
+    const team = data.rows[0];
+    return team;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch team with ID.');
+  }
+}
+
+export async function fetchVolunteersByTeamId(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<VolunteerField>`
+      SELECT 
+          u.id,
+          u.name,
+          u.email,
+          u.phone
+      FROM
+          volunteers_works_or_worked_in vw
+      JOIN 
+          users u ON u.id = vw.volunteer_id
+      WHERE
+          vw.team_id=${id} and u.role = 'volunteer';
+    `;
+
+    const volunteers = data.rows;
+    return volunteers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch volunteers by team id.');
+  }
+}
+
+// these volunteers might have worked in some archived teams before but currently not working in any active team
+export async function fetchAvailableVolunteers(id: string) {
+  noStore();
+
+  try {
+    const data = await sql<VolunteerField>`
+      SELECT
+          u.id,
+          u.name,
+          u.email,
+          u.phone
+      FROM
+          users u
+      WHERE
+          u.id NOT IN (
+              SELECT 
+                  u.id
+              FROM
+                  volunteers_works_or_worked_in vw
+              JOIN 
+                  users u ON u.id = vw.volunteer_id
+              JOIN
+                  teams t ON t.id = vw.team_id
+              WHERE 
+                  u.role = 'volunteer' AND t.status = 'active'
+          ) 
+          AND 
+            u.role = 'volunteer';
+    `;
+
+    const volunteers = data.rows;
+    return volunteers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch available volunteers.');
   }
 }

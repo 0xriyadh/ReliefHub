@@ -2,6 +2,7 @@ import { fetchCampaignStocks, fetchFilteredTeams } from '@/app/lib/data';
 import { DeleteStockItem } from './stock-buttons';
 import Status from '../campaigns/status';
 import { DeleteTeam } from './teams-buttons';
+import Link from 'next/link';
 
 export default async function TeamsTable({
   id,
@@ -47,7 +48,11 @@ export default async function TeamsTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{team.name}</p>
+                      <Link href={`/admin/team/${team.id}`}>
+                        <p className="hover:text-blue-primary-color-600">
+                          {team.name}
+                        </p>
+                      </Link>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
