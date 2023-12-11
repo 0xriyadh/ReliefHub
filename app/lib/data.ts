@@ -8,7 +8,9 @@ import {
   LatestDonations,
   LatestReliefs,
   ModeratorsField,
+  ReliefDistributionTable,
   ReliefForm,
+  ReliefRecipientForDistribution,
   ReliefStocksField,
   ReliefsTable,
   StocksTable,
@@ -705,6 +707,7 @@ export async function fetchReliefStocks(reliefId: string) {
         SELECT 
             t.id as transaction_id,
             d.name,
+            d.id as item_id,
             t.quantity,
             d.unit
         FROM
@@ -721,5 +724,101 @@ export async function fetchReliefStocks(reliefId: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch relief stocks.');
+  }
+}
+
+export async function fetchReliefDistribution(
+  reliefId: string,
+  currentPage: number,
+) {
+  noStore();
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const data = await sql<ReliefDistributionTable>`
+        SELECT 
+            rrr.relief_id,
+            u.name as recipient_name,
+            di.name as item_name,
+            di.unit as item_unit,
+            rrr.quantity as quantity,
+            rrr.timestamp
+            
+        FROM 
+            recipient_receive_relief rrr
+        JOIN
+            users u ON rrr.recipient_id = u.id
+        JOIN
+            donation_items di ON rrr.donation_item_id = di.id
+        WHERE 
+            rrr.relief_id = ${reliefId}
+        ORDER BY
+            rrr.timestamp DESC
+        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+      `;
+
+    const reliefDistribution = data.rows;
+    return reliefDistribution;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch relief distribution.');
+  }
+}
+
+export async function fetchReliefDistributionPages(reliefId: string) {
+  noStore();
+
+  try {
+    const count = await sql`
+            SELECT 
+                COUNT(*)
+            FROM 
+                recipient_receive_relief rrr
+            JOIN
+                users u ON rrr.recipient_id = u.id
+            JOIN
+                donation_items di ON rrr.donation_item_id = di.id
+            WHERE 
+                rrr.relief_id = ${reliefId};
+        `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of relief distribution.');
+  }
+}
+
+export async function fetchRecipientsForDistribution(reliefId: string) {
+  noStore();
+
+  try {
+    const data = await sql<ReliefRecipientForDistribution>`
+      SELECT 
+          u.id,
+          u.name
+      FROM 
+          users u
+      WHERE
+          u.type = 'recipient' 
+          AND u.id NOT IN (
+              SELECT 
+                  recipient_id 
+              FROM 
+                  recipient_receive_relief 
+              WHERE 
+                  relief_id = 'cea7d7a5-8629-4867-8404-2fda94e2c45e'
+          )
+      ORDER BY
+          u.name ASC;
+      `;
+
+    const recipients = data.rows;
+    return recipients;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch recipients for distribution.');
   }
 }
