@@ -1,7 +1,7 @@
 import { fetchReliefDistributionPages, fetchReliefsPages } from '@/app/lib/data';
 import { CreateRelief } from '@/app/ui/campaign/reliefs-buttons';
 import Pagination from '@/app/ui/campaigns/pagination';
-import { DistributeRelief } from '@/app/ui/relief/relief-buttons';
+import { DistributeRelief } from '@/app/ui/relief/relief-distributions-buttons';
 import ReliefDistributionTable from '@/app/ui/relief/relief-distribution-table';
 import { TableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';

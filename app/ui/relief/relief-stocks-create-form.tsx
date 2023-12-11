@@ -2,9 +2,6 @@
 
 import Link from 'next/link';
 import {
-  MegaphoneIcon,
-  UserIcon,
-  UserGroupIcon,
   CalculatorIcon,
   GiftIcon,
 } from '@heroicons/react/24/outline';
@@ -12,18 +9,21 @@ import { Button } from '@/app/ui/button';
 import {
   ReliefRecipientForDistribution,
   ReliefStocksField,
+  StocksTable,
 } from '@/app/lib/definitions';
-import { createCampaignTeam, createDistributeRelief } from '@/app/lib/actions';
+import { createDistributeRelief } from '@/app/lib/actions';
 
-export default function CreateDistributionForm({
+export default function CreateReliefStockForm({
   reliefId,
-  recipients,
   reliefStocks,
+  donationItemsFromCampaignStocksNotInReliefStocks: items,
 }: {
   reliefId: string;
   recipients: ReliefRecipientForDistribution[];
   reliefStocks: ReliefStocksField[];
-  }) {
+  campaignId: string;
+  donationItemsFromCampaignStocksNotInReliefStocks: StocksTable[];
+}) {
   const distributeRelief = createDistributeRelief.bind(
     null,
     reliefId,
@@ -32,37 +32,10 @@ export default function CreateDistributionForm({
   return (
     <form action={distributeRelief}>
       <div className="bg-gray-50 p-4 md:p-6">
-        {/* Relief Recipient */}
-        <div className="mb-4">
-          <label htmlFor="recipient" className="mb-2 block text-sm font-medium">
-            Recipient
-          </label>
-          <div className="relative">
-            <select
-              id="recipient"
-              name="recipientId"
-              className="peer block w-full cursor-pointer border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              aria-describedby="recipient-error"
-              required
-            >
-              <option value="" disabled>
-                Choose a recipient to donate
-              </option>
-              {recipients.map((recipient) => (
-                <option key={recipient.id} value={recipient.id}>
-                  {recipient.name}
-                </option>
-              ))}
-            </select>
-            <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-        </div>
-
-        {/* Distribution Item */}
+        {/* Donation Item */}
         <div className="mb-4">
           <label htmlFor="item" className="mb-2 block text-sm font-medium">
-            Distribution Item
+            Donation Item
           </label>
           <div className="relative">
             <select
@@ -76,11 +49,15 @@ export default function CreateDistributionForm({
               <option value="" disabled>
                 Choose a distribution item to donate
               </option>
-              {reliefStocks.map((item) => (
-                <option key={item.transaction_id} value={item.item_id}>
-                  {item.name +
+              {items.map((item) => (
+                <option
+                  key={item.donation_item_id}
+                  value={item.donation_item_id}
+                >
+                  {item.item_name}
+                  {item.item_name +
                     ' ' +
-                    `(${item.quantity.toLocaleString()} ${item.unit} left)`}
+                    `(${item.item_quantity.toLocaleString()} ${item.item_unit} left)`}
                 </option>
               ))}
             </select>
@@ -115,7 +92,7 @@ export default function CreateDistributionForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Distribute</Button>
+        <Button type="submit">Add to Relief Stock</Button>
       </div>
     </form>
   );

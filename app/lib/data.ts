@@ -376,15 +376,11 @@ export async function fetchUserById(id: string) {
   }
 }
 
-export async function fetchFilteredStocks(
-  campaign_id: string,
-  currentPage: number,
-) {
+export async function fetchCampaignStocks(campaign_id: string) {
   noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    console.log('Fetching filtered stocks ...');
+    console.log('Fetching campaign stocks ...');
     const campaignStocks = await sql<StocksTable>`
             SELECT 
                 campaigns.id AS campaign_id,
@@ -392,7 +388,7 @@ export async function fetchFilteredStocks(
                 donation_items.name AS item_name, 
                 donation_items.unit AS item_unit, 
                 campaign_stocks.quantity AS item_quantity
-            FROM 
+            FROM
                 campaign_stocks
             JOIN 
                 campaigns ON campaign_stocks.campaign_id = campaigns.id
@@ -400,39 +396,54 @@ export async function fetchFilteredStocks(
                 donation_items ON campaign_stocks.donation_item_id = donation_items.id
             WHERE
                 campaigns.id=${campaign_id}
-            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
         `;
 
-    console.log('Fetching filtered stocks completed after 1 sec. ');
+    console.log('Fetching campaign stocks completed after 1 sec. ');
     return campaignStocks.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch filtered stocks.');
+    throw new Error('Failed to fetch campaign stocks.');
   }
 }
 
-export async function fetchCampaignStocksPages(id: string) {
+export async function fetchDonationItemsFromCampaignStocksNotInReliefStocks(
+  campaignId: string,
+  reliefId: string,
+) {
   noStore();
 
   try {
-    const count = await sql`
-            SELECT 
-                COUNT(*)
+    const data = await sql<StocksTable>`
+        SELECT
+            c.id AS campaign_id,
+            di.id AS donation_item_id,
+            di.name AS item_name, 
+            di.unit AS item_unit, 
+            cs.quantity AS item_quantity
+        FROM
+            campaign_stocks cs
+        JOIN 
+            campaigns c ON cs.campaign_id = c.id
+        JOIN 
+            donation_items di ON cs.donation_item_id = di.id
+        WHERE
+            c.id=${campaignId}
+        AND di.id NOT IN
+            (SELECT
+                t.donation_item_id
             FROM 
-                campaign_stocks
-            JOIN 
-                campaigns ON campaign_stocks.campaign_id = campaigns.id
-            JOIN 
-                donation_items ON campaign_stocks.donation_item_id = donation_items.id
+                transactions t
             WHERE
-                campaigns.id=${id};
-        `;
+                t.relief_id = ${reliefId})
+        ORDER BY
+            di.name ASC;
+      `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of campaigns.');
+    const donationItems = data.rows;
+    return donationItems;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch donation items not in relief stocks.');
   }
 }
 

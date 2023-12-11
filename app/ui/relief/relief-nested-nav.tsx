@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 const links = [
   { name: 'Relief Stocks', f_href: '/admin/relief/', l_href: '' },
   {
-    name: 'Distribution',
+    name: 'Distributions',
     f_href: '/admin/relief/',
-    l_href: '/distribution',
+    l_href: '/distributions',
   },
   {
     name: 'Teams',

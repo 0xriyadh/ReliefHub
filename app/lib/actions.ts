@@ -3,6 +3,7 @@
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { ReliefStocksField } from './definitions';
 
 export async function createCampaign(formData: FormData) {
   // Prepare data for insertion into the database
@@ -317,4 +318,84 @@ export async function deleteDonation(id: string) {
       error: error.toString(),
     };
   }
+}
+
+export async function createDistributeRelief(
+  reliefId: string,
+  reliefStocks: ReliefStocksField[],
+  formData: FormData,
+) {
+  // Prepare data for insertion into the database
+  console.log(
+    'createDistributeRelief function called.',
+    Object.fromEntries(formData.entries()),
+    reliefId,
+  );
+  const { recipientId, donationItemId, quantity } =
+    Object.fromEntries(formData.entries()) || {};
+
+  // Check if the quantity is greater than 0 and less than or equal to the stock
+  const reliefStock = reliefStocks.find(
+    (stock) => stock.item_id === donationItemId,
+  );
+  if (Number(quantity) <= 0) {
+    return {
+      message: 'Quantity must be a positive number.',
+    };
+  }
+  if (Number(quantity) > Number(reliefStock?.quantity)) {
+    return {
+      message: 'Quantity must be less than or equal to the stock.',
+    };
+  }
+  // Insert data into the database
+  try {
+    console.log('Attempting to create relief distribution.');
+    await sql`
+            INSERT INTO recipient_receive_relief (
+              relief_id, 
+              recipient_id, 
+              donation_item_id, 
+              quantity
+            ) VALUES (
+              ${`${reliefId}`}, 
+              ${`${recipientId}`}, 
+              ${`${donationItemId}`}, 
+              ${`${quantity}`}
+            );
+        `;
+    console.log('Relief Distribution Created.');
+
+    // Update relief stock
+    try {
+      await sql`
+      UPDATE 
+        transactions
+      SET 
+        quantity = quantity - ${Number(quantity)}
+      WHERE 
+        relief_id = ${reliefId} AND donation_item_id = ${`${donationItemId}`};
+    `;
+    } catch (error) {
+      console.error('Database Error:', error);
+      await sql`
+        DELETE FROM 
+          recipient_receive_relief
+        WHERE 
+          relief_id = ${reliefId} AND recipient_id = ${`${recipientId}`};
+      `;
+      return {
+        message: 'Database Error: Failed to Update Relief Stock.',
+      };
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Relief Distribution.',
+    };
+  }
+
+  // // // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/admin/relief/${reliefId}/distributions`);
+  redirect(`/admin/relief/${reliefId}/distributions`);
 }
