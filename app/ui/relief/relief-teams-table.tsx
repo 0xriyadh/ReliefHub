@@ -1,10 +1,21 @@
 import { fetchFilteredTeams, fetchReliefTeams } from '@/app/lib/data';
 import Status from '../campaigns/status';
+import { FaceFrownIcon } from '@heroicons/react/24/outline';
 // import { DeleteTeam } from './teams-buttons';
 
 export default async function ReliefTeamsTable({ reliefId }: { reliefId: string }) {
   const teams = await fetchReliefTeams(reliefId);
-
+    if (teams.length <= 0) {
+      return (
+        <>
+          <div className="flex h-60 items-center justify-center space-x-2 text-2xl">
+            <FaceFrownIcon className="h-10 w-10 text-gray-400" />
+            <p className="text-gray-500">No team has been assigned to this relief yet</p>
+          </div>
+        </>
+      );
+    }
+  
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
