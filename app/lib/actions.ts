@@ -3,7 +3,7 @@
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { ReliefStocksField } from './definitions';
+import { ReliefStocksField, StocksTable } from './definitions';
 
 export async function createCampaign(formData: FormData) {
   // Prepare data for insertion into the database
@@ -398,4 +398,84 @@ export async function createDistributeRelief(
   // // // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath(`/admin/relief/${reliefId}/distributions`);
   redirect(`/admin/relief/${reliefId}/distributions`);
+}
+
+export async function createReliefStock(
+  reliefId: string,
+  campaignId: string,
+  campaignStocks: StocksTable[],
+  formData: FormData,
+) {
+  // Prepare data for insertion into the database
+  console.log(
+    'createReliefStock function called.',
+    Object.fromEntries(formData.entries()),
+    'reliefId',
+    reliefId,
+    'campaignId',
+    campaignId,
+    'campaignStocks',
+    campaignStocks,
+  );
+
+  const { donationItemId, quantity } =
+    Object.fromEntries(formData.entries()) || {};
+
+  // Check if the quantity is greater than 0 and less than or equal to the stock
+  const reliefStock = campaignStocks.find(
+    (stock) => stock.donation_item_id === donationItemId,
+  );
+  if (Number(quantity) <= 0) {
+    return {
+      message: 'Quantity must be a positive number.',
+    };
+  }
+  if (Number(quantity) > Number(reliefStock?.item_quantity)) {
+    return {
+      message: 'Quantity must be less than or equal to the stock.',
+    };
+  }
+  // Insert data into the database
+  try {
+    console.log('Attempting to add stock to relief.');
+    await sql`
+            INSERT INTO transactions (donation_item_id, quantity, relief_id, campaign_id) 
+            VALUES (${`${donationItemId}`}, ${`${Number(
+              quantity,
+            )}`}, ${`${reliefId}`}, ${`${campaignId}`});
+        `;
+    console.log('Relief Stock Added.');
+
+    // Update Campaign Stock
+    try {
+      await sql`
+      UPDATE
+        campaign_stocks
+      SET
+        quantity = quantity - ${Number(quantity)}
+      WHERE
+        campaign_id = ${campaignId} AND donation_item_id = ${`${donationItemId}`};
+    `;
+    } catch (error) {
+      console.error('Database Error:', error);
+      await sql`
+        DELETE FROM
+          transactions
+        WHERE
+          relief_id = ${reliefId} AND donation_item_id = ${`${donationItemId}`};
+      `;
+      return {
+        message: 'Database Error: Failed to Update Campaign Stock.',
+      };
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Add Stock to Relief.',
+    };
+  }
+
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/admin/relief/${reliefId}`);
+  redirect(`/admin/relief/${reliefId}`);
 }
