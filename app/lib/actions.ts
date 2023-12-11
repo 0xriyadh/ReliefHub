@@ -512,3 +512,39 @@ export async function assignTeamToRelief(reliefId: string, formData: FormData) {
   revalidatePath(`/admin/relief/${reliefId}/teams`);
   redirect(`/admin/relief/${reliefId}/teams`);
 }
+
+export async function assignVolunteerToTeam(
+  teamId: string,
+  formData: FormData,
+) {
+  // Prepare data for insertion into the database
+  console.log(
+    'assignVolunteerToTeam function called.',
+    Object.fromEntries(formData.entries()),
+    'teamId',
+    teamId,
+  );
+  const { volunteerId } = Object.fromEntries(formData.entries()) || {};
+
+  // Insert data into the database
+  try {
+    console.log('Attempting to assign volunteer to team.');
+    await sql`
+            INSERT 
+            INTO 
+              volunteers_works_or_worked_in (volunteer_id, team_id) 
+            VALUES
+              (${`${volunteerId}`}, ${`${teamId}`});
+        `;
+    console.log('Volunteer Assigned to Team.');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Assign Volunteer to Team.',
+    };
+  }
+
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/admin/team/${teamId}`);
+  redirect(`/admin/team/${teamId}`);
+}
