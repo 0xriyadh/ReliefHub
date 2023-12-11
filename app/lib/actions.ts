@@ -479,3 +479,36 @@ export async function createReliefStock(
   revalidatePath(`/admin/relief/${reliefId}`);
   redirect(`/admin/relief/${reliefId}`);
 }
+
+export async function assignTeamToRelief(reliefId: string, formData: FormData) {
+  // Prepare data for insertion into the database
+  console.log(
+    'assignTeamToRelief function called.',
+    Object.fromEntries(formData.entries()),
+    'reliefId',
+    reliefId,
+  );
+  const { teamId } = Object.fromEntries(formData.entries()) || {};
+
+  // Insert data into the database
+  try {
+    console.log('Attempting to assign team to relief.');
+    await sql`
+            INSERT 
+            INTO 
+              team_works_with_relief (team_id, relief_id) 
+            VALUES
+              (${`${teamId}`}, ${`${reliefId}`});
+        `;
+    console.log('Team Assigned to Relief.');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Assign Team to Relief.',
+    };
+  }
+
+  // // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/admin/relief/${reliefId}/teams`);
+  redirect(`/admin/relief/${reliefId}/teams`);
+}

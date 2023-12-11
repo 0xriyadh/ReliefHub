@@ -15,6 +15,7 @@ import {
   ReliefsTable,
   StocksTable,
   TeamField,
+  TeamForm,
   TeamsTable,
   UserTable,
 } from './definitions';
@@ -831,5 +832,57 @@ export async function fetchRecipientsForDistribution(reliefId: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch recipients for distribution.');
+  }
+}
+
+export async function fetchReliefTeams(reliefId: string) {
+  noStore();
+  try {
+    const data = await sql<TeamsTable>`
+        SELECT
+            t.id,
+            t.name,
+            t.district,
+            t.status,
+            u.name AS team_leader_name,
+            u.id AS team_leader_id
+        FROM 
+            teams t
+        JOIN 
+            users u ON t.team_leader_id = u.id
+        WHERE
+            t.id IN (
+                SELECT team_id FROM team_works_with_relief WHERE relief_id = ${reliefId}
+            );
+    `;
+
+    const teams = data.rows;
+    return teams;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch teams working with relief.');
+  }
+}
+
+export async function fetchTeamsToAssignToRelief(campaign_id: string, reliefId: string) {
+  noStore();
+  try {
+    const data = await sql<TeamForm>`
+      SELECT 
+          t.id,
+          t.name
+      FROM 
+          teams t
+      LEFT JOIN 
+          team_works_with_relief twr ON t.id = twr.team_id AND twr.relief_id = ${reliefId}
+      WHERE 
+          t.campaign_id = ${campaign_id} AND twr.team_id IS NULL AND t.status = 'active';
+    `;
+
+    const teams = data.rows;
+    return teams;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch teams to assign to relief.');
   }
 }

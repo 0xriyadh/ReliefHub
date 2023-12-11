@@ -1,34 +1,19 @@
-import { fetchReliefsPages } from '@/app/lib/data';
-import { CreateRelief } from '@/app/ui/campaign/reliefs-buttons';
-import ReliefsTable from '@/app/ui/campaign/reliefs-table';
-import Pagination from '@/app/ui/campaigns/pagination';
+import { AssignTeamToRelief } from '@/app/ui/relief/relief-teams-buttons';
+import ReliefTeamsTable from '@/app/ui/relief/relief-teams-table';
 import { TableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 
-async function Page({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams?: {
-    page?: string;
-  };
-}) {
-  const id = params.id;
-  const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchReliefsPages(id);
+async function Page({ params }: { params: { reliefId: string } }) {
+  const reliefId = params.reliefId;
 
   return (
     <div>
       <div className="mt-4 flex">
-        <CreateRelief campaignId={id} />
+        <AssignTeamToRelief reliefId={reliefId} />
       </div>
-      <Suspense key={id} fallback={<TableSkeleton />}>
-        <ReliefsTable id={id} currentPage={currentPage} />
+      <Suspense key={reliefId} fallback={<TableSkeleton />}>
+        <ReliefTeamsTable reliefId={reliefId} />
       </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
     </div>
   );
 }
