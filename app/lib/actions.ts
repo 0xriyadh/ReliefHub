@@ -4,6 +4,52 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ReliefStocksField, StocksTable } from './definitions';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function createUser(role: string | null, formData: FormData) {
+  // Prepare data for insertion into the database
+  console.log(Object.fromEntries(formData.entries()));
+  const { name, email, phone, type, password } =
+    Object.fromEntries(formData.entries()) || {};
+
+  // // Insert data into the database
+  // try {
+  //   await sql`
+  //           INSERT INTO users (name, email, password, role)
+  //           VALUES (${`${name}`}, ${`${email}`}, ${`${password}`}, ${`${role}`});
+  //       `;
+  // } catch (error) {
+  //   // If a database error occurs, return a more specific error
+  //   return {
+  //     message: 'Database Error: Failed to Create User.',
+  //   };
+  // }
+
+  // // Revalidate the cache for the invoices page and redirect the user.
+  // revalidatePath('/admin/users');
+  // redirect('/admin/users');
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    console.log('Form Data From Authenticate', formData);
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
 
 export async function createCampaign(formData: FormData) {
   // Prepare data for insertion into the database

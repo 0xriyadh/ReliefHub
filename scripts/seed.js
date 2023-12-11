@@ -36,7 +36,7 @@ async function seedUsers(client) {
             name VARCHAR(255) NOT NULL,
             phone VARCHAR(20) NOT NULL,
             email TEXT NOT NULL UNIQUE,
-            address TEXT NOT NULL,
+            address TEXT,
             role user_role,
             type user_type NOT NULL,
             password TEXT NOT NULL

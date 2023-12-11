@@ -17,6 +17,7 @@ import {
   TeamField,
   TeamForm,
   TeamsTable,
+  User,
   UserTable,
   VolunteerField,
 } from './definitions';
@@ -981,5 +982,16 @@ export async function fetchAvailableVolunteers() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch available volunteers.');
+  }
+}
+
+export async function fetchUser(email: string) {
+  try {
+    const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
+    console.log('user from db', user.rows[0]);
+    return user.rows[0];
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
   }
 }
