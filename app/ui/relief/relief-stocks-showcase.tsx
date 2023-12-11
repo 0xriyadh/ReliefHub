@@ -2,6 +2,7 @@ import {
   CurrencyBangladeshiIcon,
   GifIcon,
   ScaleIcon,
+  FaceFrownIcon,
 } from '@heroicons/react/24/outline';
 import { fetchCardData, fetchReliefStocks } from '@/app/lib/data';
 
@@ -18,8 +19,19 @@ export default async function ReliefStocksShowcase({
 }) {
   const stocks = await fetchReliefStocks(reliefId);
 
+  if (stocks.length <= 0) {
+    return (
+      <>
+        <div className="flex items-center justify-center space-x-2 text-2xl h-60">
+          <FaceFrownIcon className="h-10 w-10 text-gray-400" />
+          <p className="text-gray-500">No stocks found for this relief</p>
+        </div>
+      </>
+    );
+  }
+
   return (
-    <>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {stocks.map((stock) => (
         <Card
           key={stock.transaction_id}
@@ -28,7 +40,7 @@ export default async function ReliefStocksShowcase({
           type={stock.unit}
         />
       ))}
-    </>
+    </div>
   );
 }
 

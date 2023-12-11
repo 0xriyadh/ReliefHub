@@ -105,7 +105,29 @@ export type UserTable = {
 
 export type ReliefStocksField = {
   transaction_id: string;
+  item_id: string;
   name: string;
   unit: 'kg' | 'piece' | 'BDT';
   quantity: number;
+}
+
+export type ReliefDistributionTable = {
+  relief_id: string;
+  recipient_name: string;
+  item_name: string;
+  item_unit: string;
+  quantity: number;
+  timestamp: string;
+};
+
+export type ReliefDistributionForm = {
+  relief_id: string;
+  recipient_id: string;
+  item_id: string;
+  quantity: number;
+}
+
+export type ReliefRecipientForDistribution = {
+  id: string;
+  name: string;
 }

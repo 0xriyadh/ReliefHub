@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import {
+  QuestionMarkCircleIcon,
   MegaphoneIcon,
   UserIcon,
   UserGroupIcon,
@@ -9,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { ModeratorsField } from '@/app/lib/definitions';
-import { createCampaignTeam } from '@/app/lib/actions';
+import { createCampaignStock, createCampaignTeam } from '@/app/lib/actions';
 
 export default function CreateTeamForm({
   campaign_id,
