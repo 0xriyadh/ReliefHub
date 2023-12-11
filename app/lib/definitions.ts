@@ -131,3 +131,8 @@ export type ReliefRecipientForDistribution = {
   id: string;
   name: string;
 }
+
+export type TeamForm = {
+  id: string;
+  name: string;
+}
