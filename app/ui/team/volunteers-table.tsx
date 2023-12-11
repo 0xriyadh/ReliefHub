@@ -38,15 +38,15 @@ export default async function VolunteersTable({ teamId }: { teamId: string }) {
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Link href={`/admin/campaigns/${volunteer.id}`}>
-                        <p className="hover:text-primary-color-600">
-                          {volunteer.name}
-                        </p>
-                      </Link>
+                      <p>{volunteer.name}</p>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">{volunteer.email}</td>
-                  <td className="whitespace-nowrap px-3 py-3">{volunteer.phone}</td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {volunteer.email}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {volunteer.phone}
+                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       {/* <UpdateCampaign id={volunteer.id} />
