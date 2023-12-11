@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import { fetchUser } from './app/lib/data';
 
 export const authConfig = {
   pages: {
@@ -8,13 +7,9 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const user = fetchUser(auth?.user?.email as string);
-      console.log('user', user);
       const isOnAdminDashboard = nextUrl.pathname.startsWith('/admin');
       if (isOnAdminDashboard) {
         if (isLoggedIn) {
-          
-          
           return true;
         }
         return false; // Redirect unauthenticated users to login page
