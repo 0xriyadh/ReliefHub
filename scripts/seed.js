@@ -7,7 +7,6 @@ const {
     donationItems,
     campaignStocks,
     reliefs,
-    reliefRecipients,
     recipientReceiveRelief,
     teamWorksWithRelief,
     transactions,

@@ -487,7 +487,7 @@ const campaigns = [
     id: '11731e47-c8f6-473a-8b3d-16cb7eaee456',
     name: 'Ramadan Campaign 2023',
     campaign_leader_id: users[1].id,
-    status: 'archived',
+    status: 'active',
     timestamp: '2023-05-12 12:00:00',
   },
   {
