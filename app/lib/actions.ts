@@ -4,6 +4,7 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ReliefStocksField, StocksTable } from './definitions';
+import { ReliefStocksField } from './definitions';
 
 export async function createCampaign(formData: FormData) {
   // Prepare data for insertion into the database

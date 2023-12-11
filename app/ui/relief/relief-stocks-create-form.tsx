@@ -20,6 +20,33 @@ export default function CreateReliefStockForm({
     reliefId,
     campaignId,
     items,
+import {
+  CalculatorIcon,
+  GiftIcon,
+} from '@heroicons/react/24/outline';
+import { Button } from '@/app/ui/button';
+import {
+  ReliefRecipientForDistribution,
+  ReliefStocksField,
+  StocksTable,
+} from '@/app/lib/definitions';
+import { createDistributeRelief } from '@/app/lib/actions';
+
+export default function CreateReliefStockForm({
+  reliefId,
+  reliefStocks,
+  donationItemsFromCampaignStocksNotInReliefStocks: items,
+}: {
+  reliefId: string;
+  recipients: ReliefRecipientForDistribution[];
+  reliefStocks: ReliefStocksField[];
+  campaignId: string;
+  donationItemsFromCampaignStocksNotInReliefStocks: StocksTable[];
+}) {
+  const distributeRelief = createDistributeRelief.bind(
+    null,
+    reliefId,
+    reliefStocks,
   );
   return (
     <form action={distributeRelief}>
@@ -52,6 +79,7 @@ export default function CreateReliefStockForm({
                     `(${item.item_quantity.toLocaleString()} ${
                       item.item_unit
                     } left)`}
+                    `(${item.item_quantity.toLocaleString()} ${item.item_unit} left)`}
                 </option>
               ))}
             </select>
@@ -82,6 +110,7 @@ export default function CreateReliefStockForm({
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href={`/admin/relief/${reliefId}`}
+          href={`/admin/relief/${reliefId}/distributions`}
           className="flex h-10 items-center bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
