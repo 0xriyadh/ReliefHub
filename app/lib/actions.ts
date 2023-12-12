@@ -6,29 +6,52 @@ import { redirect } from 'next/navigation';
 import { ReliefStocksField, StocksTable } from './definitions';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { z } from 'zod';
+import bcrypt from 'bcrypt';
+import { fetchCampaignStocks } from './data';
 
 export async function createUser(role: string | null, formData: FormData) {
   // Prepare data for insertion into the database
   console.log(Object.fromEntries(formData.entries()));
-  const { name, email, phone, type, password } =
-    Object.fromEntries(formData.entries()) || {};
+  const parsedCredentials = z
+    .object({
+      name: z.string(),
+      email: z.string().email(),
+      phone: z.string().min(11),
+      address: z.string().optional(),
+      role: z.string().optional(),
+      type: z.string(),
+      password: z.string().min(6),
+    })
+    .safeParse(Object.fromEntries(formData.entries()));
+  if (parsedCredentials.success) {
+    const { name, email, phone, address, role, type, password } =
+      parsedCredentials.data;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+      await sql`
+      INSERT INTO users (name, email, phone, address, role, type, password)
+      VALUES (${name}, ${email}, ${phone}, ${address}, ${role}, ${type}, ${hashedPassword});
+    `;
+    } catch (error) {
+      console.error('Error signing up:', error);
+      return 'Error signing up';
+    }
 
-  // // Insert data into the database
-  // try {
-  //   await sql`
-  //           INSERT INTO users (name, email, password, role)
-  //           VALUES (${`${name}`}, ${`${email}`}, ${`${password}`}, ${`${role}`});
-  //       `;
-  // } catch (error) {
-  //   // If a database error occurs, return a more specific error
-  //   return {
-  //     message: 'Database Error: Failed to Create User.',
-  //   };
-  // }
-
-  // // Revalidate the cache for the invoices page and redirect the user.
-  // revalidatePath('/admin/users');
-  // redirect('/admin/users');
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
+      }
+      throw error;
+    }
+  }
 }
 
 export async function authenticate(
@@ -593,4 +616,81 @@ export async function assignVolunteerToTeam(
   // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath(`/admin/team/${teamId}`);
   redirect(`/admin/team/${teamId}`);
+}
+
+export async function createTransactionDonation(
+  donorId: string,
+  formData: FormData,
+) {
+  // Prepare data for insertion into the database
+  console.log(
+    'createTransactionDonation function called.',
+    Object.fromEntries(formData.entries()),
+    'donorId',
+    donorId,
+  );
+  const { campaignId, donationItemId, quantity } =
+    Object.fromEntries(formData.entries()) || {};
+  
+  // Insert data into the database
+  try {
+    console.log('Attempting to create donation.');
+    await sql`
+            INSERT INTO transactions (donation_item_id, quantity, campaign_id, donor_id)
+            VALUES (${`${donationItemId}`}, ${`${Number(
+              quantity,
+            )}`}, ${`${campaignId}`}, ${`${donorId}`});
+        `;
+    console.log('Donation Created.');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Donation.',
+    };
+  }
+
+  // Checking if this donation item is already in the campaign stock
+  const campaignStocks = await fetchCampaignStocks(campaignId.toString());
+  const campaignStock = campaignStocks.find(
+    (stock) => stock.donation_item_id === donationItemId,
+  );
+  if (campaignStock) {
+    // Update Campaign Stock
+    try {
+      await sql`
+      UPDATE
+        campaign_stocks
+      SET
+        quantity = quantity + ${Number(quantity)}
+      WHERE
+        campaign_id = ${campaignId.toString()} AND donation_item_id = ${`${donationItemId}`};
+    `;
+    } catch (error) {
+      console.error('Database Error:', error);
+      return {
+        message: 'Database Error: Failed to Update Campaign Stock.',
+      };
+    }
+  } else {
+    // Insert data into the database
+    try {
+      console.log('Attempting to add stock to campaign.');
+      await sql`
+            INSERT INTO campaign_stocks (Campaign_id, Donation_item_id, Quantity)
+            VALUES (${`${campaignId}`}, ${`${donationItemId}`}, ${`${Number(
+              quantity,
+            )}`});
+        `;
+      console.log('Campaign Stock Added.');
+    } catch (error) {
+      console.error('Database Error:', error);
+      return {
+        message: 'Database Error: Failed to Add Stock to Campaign.',
+      };
+    }
+  }
+
+  // // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath(`/dashboard`);
+  redirect(`/dashboard`);
 }
