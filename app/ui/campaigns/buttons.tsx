@@ -32,7 +32,7 @@ export function UpdateCampaign({ id }: { id: string }) {
     );
 }
 
-export async function DeleteCampaign({ id }: { id: string }) {
+export async function DeleteCampaign({ id, role }: { id: string, role: string }) {
     const deleteCampaignWithId = deleteCampaign.bind(null, id);
     const anyTeamExist = await fetchIfAnyTeamWithCampaignId(id);
     const stockItemExist = await fetchIfAnyStockItemWithCampaignId(id);
@@ -41,7 +41,7 @@ export async function DeleteCampaign({ id }: { id: string }) {
             <form action={deleteCampaignWithId}>
                 <button
                     className={`p-2 ${
-                        anyTeamExist || stockItemExist
+                        anyTeamExist || stockItemExist || role !== "president"
                             ? "cursor-not-allowed text-gray-200"
                             : "text-red-500 hover:text-red-200"
                     }`}

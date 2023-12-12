@@ -1,42 +1,50 @@
-import Pagination from "@/app/ui/campaigns/pagination";
-import Search from "@/app/ui/search";
-import Table from "@/app/ui/campaigns/table";
-import { CreateCampaign } from "@/app/ui/campaigns/buttons";
-import { TableSkeleton } from "@/app/ui/skeletons";
-import { Suspense } from "react";
-import { fetchCampaignsPages } from "@/app/lib/data";
+import Pagination from '@/app/ui/campaigns/pagination';
+import Search from '@/app/ui/search';
+import Table from '@/app/ui/campaigns/table';
+import { CreateCampaign } from '@/app/ui/campaigns/buttons';
+import { TableSkeleton } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
+import { fetchCampaignsPages } from '@/app/lib/data';
+import { auth } from '@/auth';
+import { fetchUser } from '@/app/lib/data';
+import { redirect } from 'next/navigation';
 
 export default async function Page({
-    searchParams,
+  searchParams,
 }: {
-    searchParams?: {
-        query?: string;
-        page?: string;
-    };
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
 }) {
-    const query = searchParams?.query || "";
-    const currentPage = Number(searchParams?.page) || 1;
+  const { user }: any = await auth();
+  const email = user?.email;
+  const userFullData = await fetchUser(email);
+  console.log('from main page', userFullData);
+  if (userFullData.role == null) {
+    return <>{redirect(`/dashboard`)}</>;
+  }
 
-    const totalPages = await fetchCampaignsPages(query);
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
 
-    return (
-        <div className="w-full">
-            <div className="flex w-full items-center justify-between">
-                <h1 className="text-2xl">Campaigns</h1>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-                <Search placeholder="Search for campaigns..." />
-                <CreateCampaign />
-            </div>
-            <Suspense
-                key={query + currentPage}
-                fallback={<TableSkeleton />}
-            >
-                <Table query={query} currentPage={currentPage} />
-            </Suspense>
-            <div className="mt-5 flex w-full justify-center">
-                <Pagination totalPages={totalPages} />
-            </div>
-        </div>
-    );
+  const totalPages = await fetchCampaignsPages(query);
+
+  return (
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
+        <h1 className="text-2xl">Campaigns</h1>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Search for campaigns..." />
+        <CreateCampaign />
+      </div>
+      <Suspense key={query + currentPage} fallback={<TableSkeleton />}>
+        <Table user={userFullData} query={query} currentPage={currentPage} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
+  );
 }

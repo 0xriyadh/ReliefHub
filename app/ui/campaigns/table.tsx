@@ -1,15 +1,16 @@
 import { UpdateCampaign, DeleteCampaign } from '@/app/ui/campaigns/buttons';
 import Status from '@/app/ui/campaigns/status';
 import { formatDateToLocal } from '@/app/lib/utils';
-import {
-  fetchFilteredCampaigns,
-} from '@/app/lib/data';
+import { fetchFilteredCampaigns } from '@/app/lib/data';
 import Link from 'next/link';
+import { User } from '@/app/lib/definitions';
 
 export default async function CampaignsTable({
+  user,
   query,
   currentPage,
 }: {
+  user: User;
   query: string;
   currentPage: number;
 }) {
@@ -20,30 +21,7 @@ export default async function CampaignsTable({
       <div className="inline-block min-w-full align-middle">
         <div className="bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {campaigns?.map((campaign) => (
-              <div key={campaign.id} className="mb-2 w-full bg-white p-4">
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <p>{campaign.name}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      {campaign.campaign_leader_name}
-                    </p>
-                  </div>
-                  <Status status={campaign.status} />
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p>{formatDateToLocal(campaign.timestamp)}</p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateCampaign id={campaign.id} />
-                    <DeleteCampaign id={campaign.id} />
-                  </div>
-                </div>
-              </div>
-            ))}
+            Mobile view is not supported yet. Please use a desktop browser.
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
@@ -73,11 +51,16 @@ export default async function CampaignsTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Link href={`/admin/campaigns/${campaign.id}`}>
-                        <p className="hover:text-primary-color-600">
-                          {campaign.name}
-                        </p>
-                      </Link>
+                      {user.role === 'president' ||
+                      user.role === 'moderator' ? (
+                        <Link href={`/admin/campaigns/${campaign.id}`}>
+                          <p className="hover:text-green-500">
+                            {campaign.name}
+                          </p>
+                        </Link>
+                      ) : (
+                        <p className="hover:text-green-500">{campaign.name}</p>
+                      )}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
@@ -92,7 +75,7 @@ export default async function CampaignsTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateCampaign id={campaign.id} />
-                      <DeleteCampaign id={campaign.id} />
+                      <DeleteCampaign id={campaign.id} role={user.role || ''} />
                     </div>
                   </td>
                 </tr>

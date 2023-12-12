@@ -32,9 +32,9 @@ export default async function ReliefsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Creation Date
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
+                {/* <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -59,17 +59,17 @@ export default async function ReliefsTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(relief.timestamp)}
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  {/* <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center justify-end gap-3">
-                      {/* <UpdateStockItem
+                      <UpdateStockItem
                             donationId={
                                 stock.donation_item_id
                             }
                             campaignId={stock.campaign_id}
-                        /> */}
+                        />
                       <DeleteRelief reliefId={relief.id} />
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
