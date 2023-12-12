@@ -51,11 +51,9 @@ export default async function MembersTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Link href={`/admin/campaigns/${user.id}`}>
                         <p className="hover:text-primary-color-600">
                           {user.name}
                         </p>
-                      </Link>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">{user.email}</td>
