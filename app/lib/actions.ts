@@ -6,29 +6,51 @@ import { redirect } from 'next/navigation';
 import { ReliefStocksField, StocksTable } from './definitions';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 export async function createUser(role: string | null, formData: FormData) {
   // Prepare data for insertion into the database
   console.log(Object.fromEntries(formData.entries()));
-  const { name, email, phone, type, password } =
-    Object.fromEntries(formData.entries()) || {};
+  const parsedCredentials = z
+    .object({
+      name: z.string(),
+      email: z.string().email(),
+      phone: z.string().min(11),
+      address: z.string().optional(),
+      role: z.string().optional(),
+      type: z.string(),
+      password: z.string().min(6),
+    })
+    .safeParse(Object.fromEntries(formData.entries()));
+  if (parsedCredentials.success) {
+    const { name, email, phone, address, role, type, password } =
+      parsedCredentials.data;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+      await sql`
+      INSERT INTO users (name, email, phone, address, role, type, password)
+      VALUES (${name}, ${email}, ${phone}, ${address}, ${role}, ${type}, ${hashedPassword});
+    `;
+    } catch (error) {
+      console.error('Error signing up:', error);
+      return 'Error signing up';
+    }
 
-  // // Insert data into the database
-  // try {
-  //   await sql`
-  //           INSERT INTO users (name, email, password, role)
-  //           VALUES (${`${name}`}, ${`${email}`}, ${`${password}`}, ${`${role}`});
-  //       `;
-  // } catch (error) {
-  //   // If a database error occurs, return a more specific error
-  //   return {
-  //     message: 'Database Error: Failed to Create User.',
-  //   };
-  // }
-
-  // // Revalidate the cache for the invoices page and redirect the user.
-  // revalidatePath('/admin/users');
-  // redirect('/admin/users');
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
+      }
+      throw error;
+    }
+  }
 }
 
 export async function authenticate(
