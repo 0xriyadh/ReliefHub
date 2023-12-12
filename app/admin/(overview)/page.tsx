@@ -21,7 +21,7 @@ export default async function Page() {
 //   }
   return (
     <main>
-      <h1 className="md:text-2xls mb-4 text-xl">Dashboard</h1>
+      <h1 className="md:text-2xls mb-4 text-xl">Admin Dashboard</h1>
       <Suspense fallback={<CardsSkeleton />}>
         <CardWrapper />
       </Suspense>

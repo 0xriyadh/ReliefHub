@@ -995,3 +995,40 @@ export async function fetchUser(email: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+
+export async function fetchLatestDonationsByDonorId(donorId: string) { 
+  try {
+    const data = await sql<LatestDonations>`
+          SELECT 
+              t.id,
+              di.name AS donation_item_name,
+              di.unit AS donation_item_unit,
+              t.quantity,
+              dn.name AS donor_name,
+              c.name AS campaign_name
+          FROM 
+              transactions t
+          JOIN 
+              users dn ON t.donor_id = dn.id
+          JOIN 
+              donation_items di ON t.donation_item_id = di.id
+          JOIN 
+              campaigns c ON t.campaign_id = c.id
+          WHERE 
+              t.donor_id = ${donorId}
+          ORDER BY 
+              t.timestamp DESC
+          LIMIT 5;
+        `;
+
+    console.log('Fetching latest donations ...');
+
+    const latestDonations = data.rows;
+
+    console.log('Data fetch completed after 1 second.');
+    return latestDonations;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest donations.');
+  }
+}

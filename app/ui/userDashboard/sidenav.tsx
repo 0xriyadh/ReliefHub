@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import NavLinks from '@/app/ui/dashboard/nav-links';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import ReliefHubLogo from '../relief-hub-logo';
+import NavLinks from '@/app/ui/userDashboard/nav-links';
 import { signOut } from '@/auth';
 
-export default function SideNav() {
+export default function SideNavUserDashboard() {
   return (
     <div className="flex h-full flex-col bg-white px-3 py-4 md:px-2">
       <Link
