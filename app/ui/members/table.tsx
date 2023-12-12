@@ -1,14 +1,18 @@
-import { UpdateCampaign, DeleteCampaign } from '@/app/ui/campaigns/buttons';
+import { UpdateUser } from '@/app/ui/members/buttons';
 import Status from '@/app/ui/members/status';
 import { fetchFilteredUsers } from '@/app/lib/data';
 import Link from 'next/link';
+import { User } from '@/app/lib/definitions';
+import { log } from 'util';
 
 export default async function MembersTable({
   query,
   currentPage,
+  user: loggedInUser,
 }: {
   query: string;
   currentPage: number;
+  user: User;
 }) {
   const users = await fetchFilteredUsers(query, currentPage);
 
@@ -54,21 +58,22 @@ export default async function MembersTable({
                       </Link>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {user.email}
-                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">{user.email}</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <Status status={user.role} />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <Status status={user.type} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateCampaign id={user.id} />
-                      <DeleteCampaign id={user.id} />
-                    </div>
-                  </td>
+                  {(loggedInUser.role === 'president' ||
+                    loggedInUser.role === 'moderator') && (
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        <UpdateUser id={user.id} />
+                        {/* <DeleteCampaign id={user.id} role={} /> */}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

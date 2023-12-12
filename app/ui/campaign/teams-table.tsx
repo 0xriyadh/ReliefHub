@@ -35,9 +35,9 @@ export default async function TeamsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Team Status
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
+                {/* <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -64,17 +64,17 @@ export default async function TeamsTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     <Status status={team.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  {/* <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center justify-end gap-3">
-                      {/* <UpdateStockItem
+                      <UpdateStockItem
                                                 donationId={
                                                     stock.donation_item_id
                                                 }
                                                 campaignId={stock.campaign_id}
-                                            /> */}
+                                            />
                       <DeleteTeam teamId={team.id} />
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

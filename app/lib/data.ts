@@ -363,7 +363,7 @@ export async function fetchUserById(id: string) {
   noStore();
 
   try {
-    const data = await sql`
+    const data = await sql<User>`
         SELECT
             *
         FROM 

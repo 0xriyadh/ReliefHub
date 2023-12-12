@@ -5,20 +5,17 @@ import CardWrapper from '@/app/ui/dashboard/cards';
 import LatestDonations from '@/app/ui/dashboard/latest-donations';
 import LatestReliefReceived from '@/app/ui/dashboard/latest-reliefs';
 import { auth } from '@/auth';
-import { fetchUser, fetchUserById } from '@/app/lib/data';
+import { fetchUser } from '@/app/lib/data';
+import { redirect } from 'next/navigation';
 
 export default async function Page() {
-  //   const { user }: any = await auth();
-  //   const email = user?.email;
-  //   const userFullData = await fetchUser(email);
-  //   console.log('from main page', userFullData);
-  //   if (userFullData.role == 'president') {
-  //     return (
-  //       <>
-  //         <p>Hi I am President {userFullData.name}</p>
-  //       </>
-  //     );
-  //   }
+  const { user }: any = await auth();
+  const email = user?.email;
+  const userFullData = await fetchUser(email);
+  console.log('from main page', userFullData);
+  if (userFullData.role == null) {
+    return <>{redirect(`/dashboard`)}</>;
+  }
   return (
     <main>
       <h1 className="md:text-2xls mb-4 text-xl">Admin Dashboard</h1>

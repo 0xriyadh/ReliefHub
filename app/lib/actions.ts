@@ -80,6 +80,34 @@ export async function updateUser(id: string, formData: FormData) {
   }
 }
 
+export async function updateUserByModerator(id: string, formData: FormData) {
+  // Prepare data for insertion into the database
+  console.log(Object.fromEntries(formData.entries()));
+  const parsedCredentials = z
+    .object({
+      name: z.string(),
+      phone: z.string().min(11),
+      role: z.string(),
+      address: z.string().optional(),
+    })
+    .safeParse(Object.fromEntries(formData.entries()));
+  if (parsedCredentials.success) {
+    const { name, phone, address, role } = parsedCredentials.data;
+    try {
+      await sql`
+      UPDATE users
+        SET name = ${name}, phone = ${phone}, address = ${address}, role = ${role}
+      WHERE id = ${id};
+    `;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      return 'Error updating user';
+    }
+    revalidatePath(`/admin/members`);
+    redirect(`/admin/members`);
+  }
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
