@@ -155,3 +155,13 @@ export type VolunteerField = {
   email: string;
   phone: string;
 };
+
+export type RecipientReliefField = {
+  relief_id: string;
+  relief_name: string;
+  recipient_name: string;
+  item_name: string;
+  item_unit: string;
+  quantity: number;
+  timestamp: string;
+};

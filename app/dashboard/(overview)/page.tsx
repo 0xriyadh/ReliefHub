@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
 import { LatestTableSkeleton } from '@/app/ui/skeletons';
-import LatestReliefs from '@/app/ui/dashboard/latest-reliefs';
 import { auth } from '@/auth';
 import { fetchUser } from '@/app/lib/data';
 import UserLatestDonations from '@/app/ui/userDashboard/latest-donations';
 import { CreateDonation } from '@/app/ui/userDashboard/donation-buttons';
+import LatestReliefReceived from '@/app/ui/userDashboard/latest-reliefs-received';
 
 export default async function Page() {
   const { user }: any = await auth();
@@ -20,8 +20,6 @@ export default async function Page() {
   return (
     <main>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-4">
-        {/*        */}
-        {/* <RevenueChart revenue={data[0]} /> */}
         {userFullData.type == 'donor' ? (
           <>
             <div className="mb-6 mt-4 flex">
@@ -33,7 +31,7 @@ export default async function Page() {
           </>
         ) : (
           <Suspense fallback={<LatestTableSkeleton />}>
-            <LatestReliefs />
+            <LatestReliefReceived recipientId={userFullData.id} />
           </Suspense>
         )}
       </div>

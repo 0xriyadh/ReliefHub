@@ -54,6 +54,32 @@ export async function createUser(role: string | null, formData: FormData) {
   }
 }
 
+export async function updateUser(id: string, formData: FormData) {
+  // Prepare data for insertion into the database
+  console.log(Object.fromEntries(formData.entries()));
+  const parsedCredentials = z
+    .object({
+      name: z.string(),
+      phone: z.string().min(11),
+      address: z.string().optional(),
+    })
+    .safeParse(Object.fromEntries(formData.entries()));
+  if (parsedCredentials.success) {
+    const { name, phone, address } = parsedCredentials.data;
+    try {
+      await sql`
+      UPDATE users
+        SET name = ${name}, phone = ${phone}, address = ${address}
+      WHERE id = ${id};
+    `;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      return 'Error updating user';
+    }
+    revalidatePath(`/dashboard/profile`);
+  }
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -631,7 +657,7 @@ export async function createTransactionDonation(
   );
   const { campaignId, donationItemId, quantity } =
     Object.fromEntries(formData.entries()) || {};
-  
+
   // Insert data into the database
   try {
     console.log('Attempting to create donation.');

@@ -8,6 +8,7 @@ import {
   LatestDonations,
   LatestReliefs,
   ModeratorsField,
+  RecipientReliefField,
   ReliefDistributionTable,
   ReliefForm,
   ReliefRecipientForDistribution,
@@ -1084,5 +1085,41 @@ export async function fetchActiveCampaigns() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch active campaigns.');
+  }
+}
+
+export async function fetchRecipientReceiveReliefsById(recipientId: string) {
+  noStore();
+
+  try {
+    const data = await sql<RecipientReliefField>`
+          SELECT 
+              rrr.relief_id,
+              r.name AS relief_name,
+              u.name AS recipient_name,
+              di.name AS item_name,
+              di.unit AS item_unit,
+              rrr.quantity,
+              rrr.timestamp
+          FROM 
+              recipient_receive_relief rrr
+          JOIN
+              donation_items di ON di.id = rrr.donation_item_id
+          JOIN
+              users u ON rrr.recipient_id = u.id
+          JOIN
+              reliefs r ON r.id = rrr.relief_id
+          WHERE 
+              rrr.recipient_id = ${recipientId}
+          ORDER BY
+              rrr.timestamp DESC
+          LIMIT 5;
+      `;
+
+    const recipientReceiveReliefs = data.rows;
+    return recipientReceiveReliefs;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch recipient receive reliefs by id.');
   }
 }
