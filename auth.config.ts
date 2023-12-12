@@ -14,10 +14,12 @@ export const authConfig = {
           return true;
         }
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        if (isOnUserDashboard) {
+      } else if (isOnUserDashboard) { 
+        if (isLoggedIn) {
           return true;
         }
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
         return Response.redirect(new URL('/admin', nextUrl));
       }
       return true;

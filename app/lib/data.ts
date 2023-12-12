@@ -450,7 +450,7 @@ export async function fetchDonationItemsFromCampaignStocksNotInReliefStocks(
   }
 }
 
-export async function fetchDonationItems(campaignId: string) {
+export async function fetchDonationItemsByCampaignId(campaignId: string) {
   noStore();
 
   try {
@@ -474,6 +474,27 @@ export async function fetchDonationItems(campaignId: string) {
         `;
 
     const donationItems = data.rows as DonationItemForm[];
+    return donationItems;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch donation items.');
+  }
+}
+
+export async function fetchDonationItems() {
+  noStore();
+
+  try {
+    const data = await sql<DonationItemForm>`
+        SELECT 
+            *
+        FROM 
+            donation_items
+        ORDER BY
+            name ASC;
+        `;
+
+    const donationItems = data.rows;
     return donationItems;
   } catch (err) {
     console.error('Database Error:', err);
@@ -986,7 +1007,6 @@ export async function fetchAvailableVolunteers() {
 }
 
 export async function fetchUser(email: string) {
-
   try {
     const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
     return user.rows[0] as User;
@@ -996,7 +1016,7 @@ export async function fetchUser(email: string) {
   }
 }
 
-export async function fetchLatestDonationsByDonorId(donorId: string) { 
+export async function fetchLatestDonationsByDonorId(donorId: string) {
   try {
     const data = await sql<LatestDonations>`
           SELECT 
@@ -1030,5 +1050,39 @@ export async function fetchLatestDonationsByDonorId(donorId: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest donations.');
+  }
+}
+
+export async function fetchActiveCampaigns() {
+  noStore();
+
+  try {
+    const data = await sql<CampaignsTable>`
+          SELECT 
+              c.id,
+              c.name,
+              c.campaign_leader_id,
+              u.name AS campaign_leader_name,
+              c.status,
+              c.timestamp
+          FROM 
+              campaigns c
+          JOIN 
+              users u ON c.campaign_leader_id = u.id
+          WHERE
+              c.status = 'active'
+          ORDER BY 
+              c.timestamp DESC;
+        `;
+
+    console.log('Fetching active campaigns ...');
+
+    const activeCampaigns = data.rows;
+
+    console.log('Data fetch completed after 1 second.');
+    return activeCampaigns;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch active campaigns.');
   }
 }

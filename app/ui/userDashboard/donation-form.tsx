@@ -1,23 +1,52 @@
 'use client';
-import { CalculatorIcon, GiftIcon } from '@heroicons/react/24/outline';
+import { CalculatorIcon, GiftIcon, MegaphoneIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { StocksTable } from '@/app/lib/definitions';
-import { createReliefStock } from '@/app/lib/actions';
+import { CampaignsTable, DonationItemForm, StocksTable } from '@/app/lib/definitions';
+import { createReliefStock, createTransactionDonation } from '@/app/lib/actions';
 import Link from 'next/link';
+import { use, useEffect, useState } from 'react';
+import { fetchCampaignStocks } from '@/app/lib/data';
 
 export default function DonationForm({
-  reliefId,
-  campaignId,
-  donationItemsFromCampaignStocksNotInReliefStocks: items,
+  donorId,
+  campaigns,
+  donationItems,
 }: {
-  reliefId: string;
-  campaignId: string;
-  donationItemsFromCampaignStocksNotInReliefStocks: StocksTable[];
-}) {
-  const reliefStock = createReliefStock.bind(null, reliefId, campaignId, items);
+  donorId: string;
+  campaigns: CampaignsTable[];
+  donationItems: DonationItemForm[];
+  }) {
+  const createDonation = createTransactionDonation.bind(null, donorId);
   return (
-    <form action={reliefStock}>
+    <form action={createDonation}>
       <div className="bg-gray-50 p-4 md:p-6">
+        {/* Select Campaign */}
+        <div className="mb-4">
+          <label htmlFor="item" className="mb-2 block text-sm font-medium">
+            Campaign
+          </label>
+          <div className="relative">
+            <select
+              id="campaign"
+              name="campaignId"
+              className="peer block w-full cursor-pointer border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue=""
+              aria-describedby="campaign-error"
+              required
+            >
+              <option value="" disabled>
+                Choose a campaign to donate
+              </option>
+              {campaigns.map((campaign) => (
+                <option key={campaign.id} value={campaign.id}>
+                  {campaign.name}
+                </option>
+              ))}
+            </select>
+            <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+        </div>
+
         {/* Donation Item */}
         <div className="mb-4">
           <label htmlFor="item" className="mb-2 block text-sm font-medium">
@@ -35,25 +64,15 @@ export default function DonationForm({
               <option value="" disabled>
                 Choose a distribution item to donate
               </option>
-              {items.map((item) => (
-                <option
-                  key={item.donation_item_id}
-                  value={item.donation_item_id}
-                >
-                  {item.item_name +
-                    ' ' +
-                    `(${item.item_quantity.toLocaleString()} ${
-                      item.item_unit
-                    } left)`}
-                  `(${item.item_quantity.toLocaleString()} ${item.item_unit}{' '}
-                  left)`
+              {donationItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
                 </option>
               ))}
             </select>
             <GiftIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
-
         {/* Quantity */}
         <div className="mb-4">
           <label htmlFor="quantity" className="mb-2 block text-sm font-medium">
@@ -76,12 +95,12 @@ export default function DonationForm({
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href={`/admin/relief/${reliefId}`}
+          href={`/dashboard`}
           className="flex h-10 items-center bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Add to Relief Stock</Button>
+        <Button type="submit">Donate</Button>
       </div>
     </form>
   );
