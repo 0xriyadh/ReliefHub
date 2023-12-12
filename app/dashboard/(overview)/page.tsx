@@ -1,12 +1,10 @@
-// import RevenueChart from "@/app/ui/dashboard/revenue-chart";
 import { Suspense } from 'react';
-import { CardsSkeleton, LatestTableSkeleton } from '@/app/ui/skeletons';
-import CardWrapper from '@/app/ui/dashboard/cards';
-import LatestDonations from '@/app/ui/dashboard/latest-donations';
+import { LatestTableSkeleton } from '@/app/ui/skeletons';
 import LatestReliefs from '@/app/ui/dashboard/latest-reliefs';
 import { auth } from '@/auth';
-import { fetchUser, fetchUserById } from '@/app/lib/data';
+import { fetchUser } from '@/app/lib/data';
 import UserLatestDonations from '@/app/ui/userDashboard/latest-donations';
+import { CreateDonation } from '@/app/ui/userDashboard/donation-buttons';
 
 export default async function Page() {
   const { user }: any = await auth();
@@ -21,13 +19,18 @@ export default async function Page() {
   }
   return (
     <main>
-      <h1 className="md:text-2xls mb-4 text-xl">User Dashboard</h1>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-4">
+        {/*        */}
         {/* <RevenueChart revenue={data[0]} /> */}
         {userFullData.type == 'donor' ? (
-          <Suspense fallback={<LatestTableSkeleton />}>
-            <UserLatestDonations donorId={userFullData.id} />
-          </Suspense>
+          <>
+            <div className="mb-6 mt-4 flex">
+              <CreateDonation donorId={userFullData.id} />
+            </div>
+            <Suspense fallback={<LatestTableSkeleton />}>
+              <UserLatestDonations donorId={userFullData.id} />
+            </Suspense>
+          </>
         ) : (
           <Suspense fallback={<LatestTableSkeleton />}>
             <LatestReliefs />
